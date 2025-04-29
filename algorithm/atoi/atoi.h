@@ -18,7 +18,10 @@
 
 #ifndef ATOI_H
 #define ATOI_H
+
+#ifndef ATOI_CLASS_H
 #include "atoi_result.h"
+#endif
 
 /**
  * Converts a string to an integer.
