@@ -48,7 +48,7 @@ public:
      * Default constructor for StringBuilder.
      * Initializes with default capacity.
      */
-    StringBuilder() = default;
+    StringBuilder();
 
     /**
      * Destructor for StringBuilder.
