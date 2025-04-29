@@ -23,7 +23,13 @@ add_executable(fluentc main.cpp
         args/flag/flag.h
         args/flag/flag.cpp
         algorithm/strlen/str_len.h
-        algorithm/str_copy/str_copy.h)
+        algorithm/str_copy/str_copy.h
+        structure/string/string_builder.cpp
+        structure/string/string_builder.h
+        algorithm/cli/help_generator.cpp
+        algorithm/cli/help_generator.h
+        algorithm/space/space_formatter.h
+        algorithm/space/space_formatter.cpp)
 
 # Get the LLVM libraries using llvm-config
 execute_process(COMMAND llvm-config --libs all OUTPUT_VARIABLE LLVM_LIBS_STRING OUTPUT_STRIP_TRAILING_WHITESPACE)
