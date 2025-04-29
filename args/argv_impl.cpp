@@ -252,5 +252,11 @@ ArgvImpl parse(const int argc, const char **argv, std::map<std::string, Flag> fl
         result.success = false;
     }
 
+    // Ensure we have at least one flag
+    if (result.numbers.empty() && result.statics.empty() && result.strings.empty())
+    {
+        result.success = false;
+    }
+
     return result;
 }
