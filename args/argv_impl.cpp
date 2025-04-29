@@ -246,5 +246,11 @@ ArgvImpl parse(const int argc, const char **argv, std::map<std::string, Flag> fl
         return result;
     }
 
+    // Ensure we don't end parsing a flag
+    if (parsing_flag)
+    {
+        result.success = false;
+    }
+
     return result;
 }
