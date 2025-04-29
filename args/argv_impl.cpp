@@ -258,5 +258,29 @@ ArgvImpl parse(const int argc, const char **argv, std::map<std::string, Flag> fl
         result.success = false;
     }
 
+    // Determine if any required flags are missing
+    for (const auto& [name, flag] : flags)
+    {
+        // Drop shortcuts or non-required flags
+        if (name != flag.original_name || !flag.required) continue;
+
+        // Check if the flag is missing
+        if (flag.type == 0)
+        {
+            if (!result.strings.contains(name))
+            {
+                result.success = false;
+                break;
+            }
+        } else if (flag.type == 1)
+        {
+            if (!result.numbers.contains(name))
+            {
+                result.success = false;
+                break;
+            }
+        }
+    }
+
     return result;
 }
