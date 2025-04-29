@@ -56,7 +56,7 @@ int main(const int argc, const char** argv)
     cout << endl;
 
     // Parse argv
-    argv_impl parsing_result = parse(argc, argv, get_flags());
+    const ArgvImpl parsing_result = parse(argc, argv, get_flags());
 
     // Handle errors
     if (!parsing_result.is_success())
