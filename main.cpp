@@ -43,6 +43,7 @@ std::map<std::string, Flag> get_flags()
         "Output program path",
         "o",
         0,
+        true,
     };
 
     flags["path"] = Flag{
@@ -50,6 +51,7 @@ std::map<std::string, Flag> get_flags()
         "Path of the program to be compiled",
         "p",
         0,
+        true,
     };
 
     flags["help"] = Flag{
