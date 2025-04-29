@@ -56,7 +56,7 @@ std::map<std::string, Flag> get_flags()
         "",
         "Displays this menu",
         "h",
-        0,
+        2,
     };
 
     return flags;
