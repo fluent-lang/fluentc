@@ -16,15 +16,15 @@
 // Created by rodrigo on 2/25/25.
 //
 
-#ifndef ARGVIMPL_H
-#define ARGVIMPL_H
+#ifndef ARGV_IMPL_H
+#define ARGV_IMPL_H
 
 #ifndef FLAG_H
 struct Flag;
 #include <map>
 #endif
 
-class ArgvImpl
+class argv_impl
 {
 public:
     // Stores string arguments mapped by their names
@@ -40,7 +40,7 @@ public:
     bool success = false;
 
     // Default constructor
-    ArgvImpl() = default;
+    argv_impl() = default;
 
     /**
      * Checks the presence of a static flag by its name.
@@ -78,6 +78,6 @@ public:
  * @param flags A map to Flag objects containing additional parsing options.
  * @return An ArgvImpl object populated with the parsed arguments.
  */
-ArgvImpl parse(int argc, const char** argv, std::map<std::string, Flag> flags);
+argv_impl parse(int argc, const char** argv, std::map<std::string, Flag> flags);
 
-#endif //ARGVIMPL_H
+#endif //ARGV_IMPL_H

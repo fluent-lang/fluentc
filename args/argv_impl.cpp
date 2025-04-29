@@ -16,22 +16,22 @@ The Fluent Programming Language
 // Created by rodrigo on 2/25/25.
 //
 
-#include <string>
-#include <map>
-#include "flag/flag.h"
-#include "../algorithm/strlen/str_len.h"
 #include <iostream>
+#include <map>
+#include <string>
 #include "../algorithm/atoi/atoi.h"
 #include "../algorithm/atoi/atoi_result.h"
 #include "../algorithm/str_copy/str_copy.h"
-#include "ArgvImpl.h"
+#include "../algorithm/strlen/str_len.h"
+#include "argv_impl.h"
+#include "flag/flag.h"
 
 /**
  * Retrieves a numeric argument by its name.
  * @param name The name of the argument to retrieve.
  * @return An optional containing the numeric value if found, or 0 if not.
  */
-long ArgvImpl::get_number(const char *name) {
+long argv_impl::get_number(const char *name) {
     if (!this->numbers.contains(name))
     {
         return 0;
@@ -46,7 +46,7 @@ long ArgvImpl::get_number(const char *name) {
     * @param name The name of the argument to retrieve.
     * @return An optional containing the string value if found, or an empty string if not.
  */
-std::string ArgvImpl::get_string(const char *name) {
+std::string argv_impl::get_string(const char *name) {
     if (!this->strings.contains(name))
     {
         return "";
@@ -60,7 +60,7 @@ std::string ArgvImpl::get_string(const char *name) {
     * Checks if the parsing was successful.
     * @return True if parsing was successful, false otherwise.
 */
-bool ArgvImpl::is_success() const {
+bool argv_impl::is_success() const {
     return this->success;
 }
 
@@ -69,7 +69,7 @@ bool ArgvImpl::is_success() const {
     * @param name The name of the flag to check.
     * @return A boolean indicating if the flag was found.
 */
-bool ArgvImpl::has(const char *name) const {
+bool argv_impl::has(const char *name) const {
     return this->statics.contains(name);
 }
 
@@ -81,9 +81,9 @@ bool ArgvImpl::has(const char *name) const {
  * @param flags A map to Flag objects containing additional parsing options.
  * @return An ArgvImpl object populated with the parsed arguments.
  */
-ArgvImpl parse(const int argc, const char **argv, std::map<std::string, Flag> flags)
+argv_impl parse(const int argc, const char **argv, std::map<std::string, Flag> flags)
 {
-    ArgvImpl result;
+    argv_impl result;
     result.success = true;
 
     // Check if argc is empty

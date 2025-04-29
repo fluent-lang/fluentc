@@ -14,9 +14,9 @@
 
 #include <iostream>
 
-#include "args/ArgvImpl.h"
-#include "args/flag/flag.h"
 #include <map>
+#include "args/argv_impl.h"
+#include "args/flag/flag.h"
 
 using namespace std;
 
@@ -56,7 +56,7 @@ int main(const int argc, const char** argv)
     cout << endl;
 
     // Parse argv
-    ArgvImpl parsing_result = parse(argc, argv, get_flags());
+    argv_impl parsing_result = parse(argc, argv, get_flags());
 
     // Handle errors
     if (!parsing_result.is_success())

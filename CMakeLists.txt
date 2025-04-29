@@ -16,8 +16,8 @@ add_definitions(${LLVM_DEFINITIONS})
 
 # Define your executable
 add_executable(fluentc main.cpp
-        args/ArgvImpl.cpp
-        args/ArgvImpl.h
+        args/argv_impl.cpp
+        args/argv_impl.h
         algorithm/atoi/atoi.h
         algorithm/atoi/atoi_result.h
         args/flag/flag.h
