@@ -58,7 +58,11 @@ int main(const int argc, const char** argv)
     // Parse argv
     ArgvImpl parsing_result = parse(argc, argv, get_flags());
 
-    // Determine errors
+    // Handle errors
+    if (!parsing_result.is_success())
+    {
+
+    }
 
     return 0;
 }
