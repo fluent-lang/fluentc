@@ -67,7 +67,7 @@ std::map<std::string, Flag> get_flags()
 int main(const int argc, const char** argv)
 {
     // Print copyright messages
-    cout << PROGRAM_NAME << "- " << PROGRAM_DESC << endl;
+    cout << PROGRAM_NAME << " - " << PROGRAM_DESC << endl;
     cout << "Copyright (c) 2025 Rodrigo R. & All Fluent Contributors" << endl;
     cout << endl;
 
