@@ -21,6 +21,7 @@
 
 #ifndef FLAG_H
 struct Flag;
+#include <map>
 #endif
 
 class ArgvImpl

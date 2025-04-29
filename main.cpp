@@ -13,22 +13,17 @@
 */
 
 #include <iostream>
-#include <map>
 
 #include "args/ArgvImpl.h"
 #include "args/flag/flag.h"
+#include <map>
 
 using namespace std;
 
-int main(const int argc, const char** argv)
+std::map<std::string, Flag> get_flags()
 {
-    // Print copyright messages
-    cout << "fluentc - The Fluent Language Compiler" << endl;
-    cout << "Copyright (c) 2025 Rodrigo R. & All Fluent Contributors" << endl;
-    cout << endl;
-
     // Define flags
-    map<std::string, Flag> flags;
+    std::map<std::string, Flag> flags;
     flags["optimization"] = Flag{
         "",
         "Optimization level (0-3)",
@@ -50,15 +45,20 @@ int main(const int argc, const char** argv)
         0,
     };
 
-    flags["help"] = Flag{
-        "",
-        "Displays this message",
-        "h",
-        2,
-    };
+    return flags;
+}
 
-    ArgvImpl parsing_result = parse(argc, argv, flags);
-    cout << parsing_result.get_number("optimization") << endl;
+int main(const int argc, const char** argv)
+{
+    // Print copyright messages
+    cout << "fluentc - The Fluent Language Compiler" << endl;
+    cout << "Copyright (c) 2025 Rodrigo R. & All Fluent Contributors" << endl;
+    cout << endl;
+
+    // Parse argv
+    ArgvImpl parsing_result = parse(argc, argv, get_flags());
+
+    // Determine errors
 
     return 0;
 }

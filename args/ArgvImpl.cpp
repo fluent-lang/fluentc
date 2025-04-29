@@ -93,6 +93,14 @@ ArgvImpl parse(const int argc, const char **argv, std::map<std::string, Flag> fl
         return result;
     }
 
+    // Add a help flag
+    flags["help"] = Flag{
+        "",
+        "Displays this message",
+        "h",
+        2,
+    };
+
     // Add all shortcuts to the flag map
     std::map<const char*, Flag> new_flags;
     for (const auto& [name, flag] : flags)
