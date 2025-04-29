@@ -90,7 +90,7 @@ void StringBuilder::write(std::string str) {
     }
 }
 
-char *StringBuilder::collect()
+std::string StringBuilder::collect()
 {
     // Detect if we have enough space to add the null terminator
     if (this->written == capacity)
@@ -102,7 +102,7 @@ char *StringBuilder::collect()
     this->buffer[length] = '\0';
 
     // Return the buffer
-    return this->buffer;
+    return std::string(this->buffer);
 }
 
 StringBuilder::StringBuilder(const size_t capacity) : capacity(capacity)

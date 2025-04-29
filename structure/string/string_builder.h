@@ -77,9 +77,9 @@ public:
     /**
      * Collects the built string and returns it.
      * The caller is responsible for freeing the returned string.
-     * @return A pointer to the null-terminated string.
+     * @return A C++ std::string.
      */
-    char* collect();
+    std::string collect();
 };
 
 #endif //STRING_BUILDER_H
