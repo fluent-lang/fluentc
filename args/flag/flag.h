@@ -31,6 +31,7 @@ struct Flag
     // 1 = int
     // 2 = static
     unsigned int type;
+    bool required;
 };
 
 #endif //FLAG_H

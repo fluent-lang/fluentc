@@ -46,6 +46,12 @@ void print_help(const char *program_name, std::map<std::string, Flag> flags)
             description_builder.write(" (UNKNOWN)");
         }
 
+        // Write whether the flag is required
+        if (flag.required)
+        {
+            description_builder.write(" (REQUIRED)");
+        }
+
         // Collect the name
         const auto name_str = name_builder.collect();
 
