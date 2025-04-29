@@ -75,7 +75,7 @@ int main(const int argc, const char** argv)
     const ArgvImpl parsing_result = parse(argc, argv, flags);
 
     // Handle errors
-    if (!parsing_result.is_success())
+    if (!parsing_result.is_success() || parsing_result.has("help"))
     {
         print_help(PROGRAM_NAME, flags);
     }
