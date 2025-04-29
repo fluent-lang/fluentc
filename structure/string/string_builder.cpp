@@ -110,6 +110,11 @@ StringBuilder::StringBuilder(const size_t capacity) : capacity(capacity)
     this->init();
 }
 
+StringBuilder::StringBuilder()
+{
+    this->init();
+}
+
 StringBuilder::~StringBuilder()
 {
     // Free the buffer
