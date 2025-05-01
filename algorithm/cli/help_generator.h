@@ -23,6 +23,6 @@
 #include "../../args/flag/flag.h"
 #endif
 
-void print_help(const char *program_name, std::map<std::string, Flag> flags);
+void print_help(const char *program_name, const std::map<std::string, Flag>& flags);
 
 #endif //HELP_GENERATOR_H
