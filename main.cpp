@@ -74,14 +74,23 @@ int main(const int argc, const char** argv)
     // Get the flags
     const auto flags = get_flags();
     // Parse argv
-    const ArgvImpl parsing_result = parse(argc, argv, flags);
+    ArgvImpl args = parse(argc, argv, flags);
 
     // Handle errors
-    if (!parsing_result.is_success() || parsing_result.has("help"))
+    if (!args.is_success() || args.has("help"))
     {
         print_help(PROGRAM_NAME, flags);
-        exit(1);
+
+        if (args.has("help"))
+        {
+            return 0;
+        }
+
+        return 1;
     }
+
+    cout << args.get_string("path") << endl;
+    cout << args.get_string("out") << endl;
 
     return 0;
 }
