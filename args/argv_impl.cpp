@@ -157,8 +157,6 @@ ArgvImpl parse(const int argc, const char **argv, std::map<std::string, Flag> fl
         // Handle flags
         if (arg[0] == '-')
         {
-            parsing_flag = true;
-
             Flag flag{};
             // Determine if this is a long or short flag
             if (arg[1] != '-')
@@ -185,6 +183,7 @@ ArgvImpl parse(const int argc, const char **argv, std::map<std::string, Flag> fl
 
                 flag = flags[&arg[1]];
                 last_flag_name = flag.original_name;
+                parsing_flag = flag.type != 2;
             } else if (arg[1] == '-')
             {
                 // Ensure we have more characters
@@ -221,6 +220,7 @@ ArgvImpl parse(const int argc, const char **argv, std::map<std::string, Flag> fl
 
                 last_flag_name = flag_name;
                 flag = flags[flag_name];
+                parsing_flag = flag.type != 2;
             } else if (arg[1] == '\0')
             {
                 // Handle null terminator
