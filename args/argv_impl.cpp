@@ -231,7 +231,13 @@ ArgvImpl parse(const int argc, const char **argv, std::map<std::string, Flag> fl
             // Check for static flags
             if (flag.type == 2)
             {
-                result.statics[last_flag.original_name] = true;
+                if (last_flag.original_name.c_str()[0] == '\0')
+                {
+                    result.statics[last_flag_name] = true;
+                } else
+                {
+                    result.statics[last_flag.original_name] = true;
+                }
                 parsing_flag = false;
                 continue;
             }
