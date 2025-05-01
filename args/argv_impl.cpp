@@ -258,6 +258,11 @@ ArgvImpl parse(const int argc, const char **argv, std::map<std::string, Flag> fl
         result.success = false;
     }
 
+    if (result.has("help"))
+    {
+        return result;
+    }
+
     // Determine if any required flags are missing
     for (const auto& [name, flag] : flags)
     {
