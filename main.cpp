@@ -80,6 +80,7 @@ int main(const int argc, const char** argv)
     if (!parsing_result.is_success() || parsing_result.has("help"))
     {
         print_help(PROGRAM_NAME, flags);
+        exit(1);
     }
 
     return 0;
