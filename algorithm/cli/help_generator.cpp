@@ -11,7 +11,7 @@
 #include "../space/space_formatter.h"
 #include "help_generator.h"
 
-void print_help(const char *program_name, std::map<std::string, Flag> flags)
+void print_help(const char *program_name, std::map<std::string, Flag>& flags)
 {
     // Create a new string builder
     auto builder = StringBuilder(250);
