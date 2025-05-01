@@ -81,7 +81,7 @@ void StringBuilder::write(const char* str)
     }
 }
 
-void StringBuilder::write(std::string str) {
+void StringBuilder::write(const std::string& str) {
     // Write all characters to the buffer
     for (const char c : str)
     {
@@ -102,7 +102,7 @@ std::string StringBuilder::collect()
     this->buffer[length] = '\0';
 
     // Return the buffer
-    return std::string(this->buffer);
+    return this->buffer;
 }
 
 StringBuilder::StringBuilder(const size_t capacity) : capacity(capacity)

@@ -72,7 +72,7 @@ public:
      * Writes a C++ std::string to the buffer.
      * @param str The std::string to write.
     */
-    void write(std::string str);
+    void write(const std::string& str);
 
     /**
      * Collects the built string and returns it.
