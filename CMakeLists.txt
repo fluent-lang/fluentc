@@ -29,7 +29,9 @@ add_executable(fluentc main.cpp
         algorithm/cli/help_generator.cpp
         algorithm/cli/help_generator.h
         algorithm/space/space_formatter.h
-        algorithm/space/space_formatter.cpp)
+        algorithm/space/space_formatter.cpp
+        reader/file_reader.cpp
+        reader/file_reader.h)
 
 # Get the LLVM libraries using llvm-config
 execute_process(COMMAND llvm-config --libs all OUTPUT_VARIABLE LLVM_LIBS_STRING OUTPUT_STRIP_TRAILING_WHITESPACE)
