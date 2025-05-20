@@ -16,29 +16,26 @@
 // Created by rodrigo on 5/1/25.
 //
 
-#include <fstream>
-#include <string>
 #include "file_reader.h"
+#include <fstream>
+#include <memory>
+#include <sstream>
+#include <string>
+#include <chrono>
 
 std::string read_file(const std::string& path)
 {
-    // Try to read the file
-    std::ifstream file_stream(path);
-
-    // Check for failure
-    if (!file_stream.is_open())
+    // Read the file at the specified path
+    std::ifstream file(path);
+    if (!file.is_open())
     {
-        return "";
+        // Print an error message
+        throw std::runtime_error("Error: Could not open file");
+        exit(1);
     }
 
     // Read the file contents
-    std::string file_contents;
-    while (file_stream.good())
-    {
-        file_stream >> file_contents;
-    }
-
-    // Close the file
-    file_stream.close();
-    return file_contents;
+    std::stringstream buffer;
+    buffer << file.rdbuf();  // Read the whole file
+    return buffer.str();  // Convert to string
 }
