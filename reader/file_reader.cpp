@@ -31,7 +31,6 @@ std::string read_file(const std::string& path)
     {
         // Print an error message
         throw std::runtime_error("Error: Could not open file");
-        exit(1);
     }
 
     // Read the file contents
