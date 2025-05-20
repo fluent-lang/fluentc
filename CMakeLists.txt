@@ -1,5 +1,37 @@
+include(FetchContent)
+
 cmake_minimum_required(VERSION 3.30)
 project(fluentc)
+
+FetchContent_Declare(
+        unordered_dense
+        GIT_REPOSITORY https://github.com/martinus/unordered_dense.git
+        GIT_TAG        main
+)
+
+FetchContent_Declare(
+        fluent_parser
+        GIT_REPOSITORY https://github.com/fluent-lang/ir_parser
+        GIT_TAG        master
+)
+
+FetchContent_Declare(
+        cli
+        GIT_REPOSITORY https://github.com/fluent-lang/cli
+        GIT_TAG        master
+)
+
+
+FetchContent_Declare(
+        fluent_libc
+        GIT_REPOSITORY https://github.com/rodrigoo-r/fluent_libc
+        GIT_TAG        master
+)
+
+FetchContent_MakeAvailable(unordered_dense)
+FetchContent_MakeAvailable(fluent_parser)
+FetchContent_MakeAvailable(cli)
+FetchContent_MakeAvailable(fluent_libc)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,20 +48,6 @@ add_definitions(${LLVM_DEFINITIONS})
 
 # Define your executable
 add_executable(fluentc main.cpp
-        args/argv_impl.cpp
-        args/argv_impl.h
-        algorithm/atoi/atoi.h
-        algorithm/atoi/atoi_result.h
-        args/flag/flag.h
-        args/flag/flag.cpp
-        algorithm/strlen/str_len.h
-        algorithm/str_copy/str_copy.h
-        structure/string/string_builder.cpp
-        structure/string/string_builder.h
-        algorithm/cli/help_generator.cpp
-        algorithm/cli/help_generator.h
-        algorithm/space/space_formatter.h
-        algorithm/space/space_formatter.cpp
         reader/file_reader.cpp
         reader/file_reader.h)
 
@@ -43,3 +61,11 @@ link_directories(${LLVM_LIBDIR})
 
 # Link against LLVM
 target_link_libraries(fluentc PRIVATE ${LLVM_LIBS})
+target_include_directories(fluentc PRIVATE ${CMAKE_BINARY_DIR}/_deps/unordered_dense-src/include)
+target_include_directories(fluentc PRIVATE ${CMAKE_BINARY_DIR}/_deps/fluent_libc-src/include)
+target_include_directories(fluentc PRIVATE ${CMAKE_BINARY_DIR}/_deps/fluent_parser-src/include)
+target_include_directories(fluentc PRIVATE ${CMAKE_BINARY_DIR}/_deps/cli-src/include)
+target_link_libraries(fluentc PRIVATE unordered_dense)
+target_link_libraries(fluentc PRIVATE fluent_parser)
+target_link_libraries(fluentc PRIVATE cli)
+target_link_libraries(fluentc PRIVATE fluent_libc)

@@ -19,47 +19,46 @@
 
 #include <iostream>
 
-#include <map>
-
-#include "algorithm/cli/help_generator.h"
-#include "args/argv_impl.h"
-#include "args/flag/flag.h"
+#include "fluent/cli/algorithm/help_generator/help_generator.h"
+#include "fluent/cli/argv_impl.h"
+#include "fluent/cli/flag/flag.h"
 
 using namespace std;
 
-std::map<std::string, Flag> get_flags()
+ankerl::unordered_dense::map<std::string, std::shared_ptr<fluent::cli::Flag>> get_flags()
 {
     // Define flags
-    std::map<std::string, Flag> flags;
-    flags["optimization"] = Flag{
-        "",
+    ankerl::unordered_dense::map<std::string, std::shared_ptr<fluent::cli::Flag>> flags;
+    flags["optimization"] = make_shared<fluent::cli::Flag>(fluent::cli::Flag{
+        fluent::cli::STRING,
+        "optimization",
         "Optimization level (0-3)",
         "O",
-        1,
-    };
+    });
 
-    flags["out"] = Flag{
-        "",
+    flags["out"] = make_shared<fluent::cli::Flag>(fluent::cli::Flag{
+        fluent::cli::STRING,
+        "out",
         "Output program path",
         "o",
-        0,
         true,
-    };
+    });
 
-    flags["path"] = Flag{
-        "",
+    flags["path"] = make_shared<fluent::cli::Flag>(fluent::cli::Flag{
+        fluent::cli::STRING,
+        "path",
         "Path of the program to be compiled",
         "p",
-        0,
         true,
-    };
+    });
 
-    flags["help"] = Flag{
-        "",
+    flags["help"] = make_shared<fluent::cli::Flag>(fluent::cli::Flag{
+        fluent::cli::STRING,
+        "help",
         "Displays this menu",
         "h",
-        2,
-    };
+        false,
+    });
 
     return flags;
 }
@@ -72,16 +71,16 @@ int main(const int argc, const char** argv)
     cout << endl;
 
     // Get the flags
-    const auto flags = get_flags();
+    auto flags = get_flags();
     // Parse argv
-    ArgvImpl args = parse(argc, argv, flags);
+    const auto args = parse_argv(argc, argv, flags);
 
     // Handle errors
-    if (!args.is_success() || args.has("help"))
+    if (!args->success || args->static_flags.contains("help"))
     {
-        print_help(PROGRAM_NAME, flags);
+        generate_help(PROGRAM_NAME, PROGRAM_DESC, flags, 18);
 
-        if (args.has("help"))
+        if (args->static_flags.contains("help"))
         {
             return 0;
         }
@@ -89,8 +88,8 @@ int main(const int argc, const char** argv)
         return 1;
     }
 
-    cout << args.get_string("path") << endl;
-    cout << args.get_string("out") << endl;
+    cout << args->string_flags.at("path") << endl;
+    cout << args->string_flags.at("out") << endl;
 
     return 0;
 }
