@@ -48,7 +48,6 @@ add_definitions(${LLVM_DEFINITIONS})
 
 # Define your executable
 add_executable(fluentc main.cpp
-        reader/file_reader.cpp
         reader/file_reader.h
         core/compiler.h)
 

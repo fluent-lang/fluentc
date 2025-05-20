@@ -18,9 +18,12 @@
 
 #ifndef COMPILER_H
 #define COMPILER_H
+#include "../reader/file_reader.h"
 
 inline void compile(const char *path, const char *output_path, size_t optimization_level)
 {
+    // Read the file
+    std::string file = read_file(path);
 }
 
 #endif //COMPILER_H
