@@ -19,7 +19,7 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
-void compile(const char *path, const char *output_path, size_t optimization_level)
+inline void compile(const char *path, const char *output_path, size_t optimization_level)
 {
 }
 
