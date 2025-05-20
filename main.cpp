@@ -34,11 +34,12 @@ ankerl::unordered_dense::map<std::string, std::shared_ptr<fluent::cli::Flag>> ge
         "optimization",
         "Optimization level (0-3)",
         "O",
+        false,
     });
 
     flags["out"] = make_shared<fluent::cli::Flag>(fluent::cli::Flag{
         fluent::cli::STRING,
-        "out",
+        "",
         "Output program path",
         "o",
         true,
@@ -46,15 +47,15 @@ ankerl::unordered_dense::map<std::string, std::shared_ptr<fluent::cli::Flag>> ge
 
     flags["path"] = make_shared<fluent::cli::Flag>(fluent::cli::Flag{
         fluent::cli::STRING,
-        "path",
+        "",
         "Path of the program to be compiled",
         "p",
         true,
     });
 
     flags["help"] = make_shared<fluent::cli::Flag>(fluent::cli::Flag{
-        fluent::cli::STRING,
-        "help",
+        fluent::cli::STATIC,
+        "",
         "Displays this menu",
         "h",
         false,
@@ -85,7 +86,7 @@ int main(const int argc, const char** argv)
             return 0;
         }
 
-        return 1;
+        return 2;
     }
 
     cout << args->string_flags.at("path") << endl;
