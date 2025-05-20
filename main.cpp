@@ -19,6 +19,7 @@
 
 #include <iostream>
 
+#include "core/compiler.h"
 #include "fluent/cli/algorithm/help_generator/help_generator.h"
 #include "fluent/cli/argv_impl.h"
 #include "fluent/cli/flag/flag.h"
@@ -77,11 +78,11 @@ int main(const int argc, const char** argv)
     const auto args = parse_argv(argc, argv, flags);
 
     // Handle errors
-    if (!args->success || args->static_flags.contains("help"))
+    if (!args->success || args->statics.contains("help"))
     {
         generate_help(PROGRAM_NAME, PROGRAM_DESC, flags, 18);
 
-        if (args->static_flags.contains("help"))
+        if (args->statics.contains("help"))
         {
             return 0;
         }
@@ -89,8 +90,14 @@ int main(const int argc, const char** argv)
         return 2;
     }
 
-    cout << args->string_flags.at("path") << endl;
-    cout << args->string_flags.at("out") << endl;
+    // Parse the optimization level if we have one
+    size_t optimization_level = 0;
+    if (args->ints.contains("optimization"))
+    {
+        optimization_level = args->ints["optimization"];
+    }
 
+    // Call the compiler
+    compile(args->strings["path"], args->strings["out"], optimization_level);
     return 0;
 }

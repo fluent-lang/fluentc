@@ -49,7 +49,8 @@ add_definitions(${LLVM_DEFINITIONS})
 # Define your executable
 add_executable(fluentc main.cpp
         reader/file_reader.cpp
-        reader/file_reader.h)
+        reader/file_reader.h
+        core/compiler.h)
 
 # Get the LLVM libraries using llvm-config
 execute_process(COMMAND llvm-config --libs all OUTPUT_VARIABLE LLVM_LIBS_STRING OUTPUT_STRIP_TRAILING_WHITESPACE)
