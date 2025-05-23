@@ -37,6 +37,8 @@ inline void process_functions(
     // Iterate over all functions
     for (const auto &[name, fun] : code->functions)
     {
+        emit(fluent::compiler::state::Building, name.data());
+
         // Create a variable map
         ankerl::unordered_dense::map<std::string_view, Variable> variables;
 

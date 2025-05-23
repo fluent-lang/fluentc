@@ -55,7 +55,7 @@ add_definitions(${LLVM_DEFINITIONS})
 
 # Define your executable
 add_executable(fluentc main.cpp
-        reader/file_reader.h
+        util/file_reader.h
         core/compiler.h
         core/backend.h
         core/feature/link/link.h
@@ -66,7 +66,12 @@ add_executable(fluentc main.cpp
         table/variable.h
         core/feature/expr/expr.h
         core/feature/call/call.h
-        reader/version_picker.h)
+        util/version_picker.h
+        ir/ir_compiler.h
+        ir/ir_linker.h
+        ansi/ansi.h
+        "state/state .h"
+        util/locator.h)
 
 # Get the LLVM libraries using llvm-config
 execute_process(COMMAND llvm-config --libs all OUTPUT_VARIABLE LLVM_LIBS_STRING OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -87,3 +92,7 @@ target_link_libraries(fluentc PRIVATE fluent_parser)
 target_link_libraries(fluentc PRIVATE cli)
 target_link_libraries(fluentc PRIVATE fluent_libc)
 target_link_libraries(fluentc PRIVATE cpp-subprocess::subprocess)
+
+# Add aggressive optimization flags for C++ and C compilers
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -funroll-loops -flto")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -march=native -funroll-loops -flto")

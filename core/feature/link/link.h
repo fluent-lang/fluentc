@@ -32,6 +32,7 @@ inline void process_links(
     // Iterate over all links
     for (const auto &link : code->links)
     {
+        emit(fluent::compiler::state::Building, link.data());
         // Parse the IR file
         llvm::SMDiagnostic err;
         const auto link_module = parseIRFile(link.data(), err, context);
