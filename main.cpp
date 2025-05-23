@@ -17,8 +17,6 @@
 #define PROGRAM_DESC "The Fluent Language Compiler"
 #define PROGRAM_VERSION "1.0.0"
 
-#include <iostream>
-
 #include "core/compiler.h"
 #include "fluent/cli/algorithm/help_generator/help_generator.h"
 #include "fluent/cli/argv_impl.h"
@@ -67,11 +65,6 @@ ankerl::unordered_dense::map<std::string, std::shared_ptr<fluent::cli::Flag>> ge
 
 int main(const int argc, const char** argv)
 {
-    // Print copyright messages
-    cout << PROGRAM_NAME << " - " << PROGRAM_DESC << endl;
-    cout << "Copyright (c) 2025 Rodrigo R. & All Fluent Contributors" << endl;
-    cout << endl;
-
     // Get the flags
     auto flags = get_flags();
     // Parse argv

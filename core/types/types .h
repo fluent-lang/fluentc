@@ -1,0 +1,69 @@
+/*
+    The Fluent Programming Language
+    -----------------------------------------------------
+    This code is released under the GNU GPL v3 license.
+    For more information, please visit:
+    https://www.gnu.org/licenses/gpl-3.0.html
+    -----------------------------------------------------
+    Copyright (c) 2025 Rodrigo R. & All Fluent Contributors
+    This program comes with ABSOLUTELY NO WARRANTY.
+    For details type `fluent l`. This is free software,
+    and you are welcome to redistribute it under certain
+    conditions; type `fluent l -f` for details.
+*/
+
+//
+// Created by rodrigo on 5/20/25.
+//
+
+#ifndef CORE_TYPES_H
+#define CORE_TYPES_H
+
+#include "fluent/file_code/file_code.h"
+
+inline llvm::Type *convert_type(
+    llvm::LLVMContext &context,
+    const fluent::file_code::Type &type
+)
+{
+    llvm::Type *result = nullptr;
+
+    // Get the type based on the type name
+    if (type.base_type.has_value())
+    {
+        result = llvm::StructType::getTypeByName(context, type.base_type.value().data());
+    } else
+    {
+        switch (type.primitive.value())
+        {
+            case fluent::file_code::Nothing:
+                result = llvm::Type::getVoidTy(context);
+                break;
+            case fluent::file_code::Num:
+                result = llvm::Type::getInt32Ty(context);
+                break;
+            case fluent::file_code::Dec:
+                result = llvm::Type::getDoubleTy(context);
+                break;
+            case fluent::file_code::String:
+                result = llvm::PointerType::get(llvm::Type::getInt8Ty(context), 0);
+                break;
+        }
+    }
+
+    // Make sure we have a valid type
+    if (result == nullptr)
+    {
+        throw std::runtime_error("Error: Could not convert type");
+    }
+
+    // Process all pointers and arrays
+    for (size_t i = 0; i < type.pointers + type.arrays; i++)
+    {
+        result = llvm::PointerType::get(result, 0);
+    }
+
+    return result;
+}
+
+#endif //CORE_TYPES_H

@@ -16,8 +16,8 @@
 // Created by rodrigo on 5/1/25.
 //
 
-#ifndef FILE_READER_H
-#define FILE_READER_H
+#ifndef FLUENTC_FILE_READER_H
+#define FLUENTC_FILE_READER_H
 #include <chrono>
 #include <fstream>
 #include <sstream>
@@ -39,4 +39,4 @@ inline std::string read_file(const char *& path)
     return buffer.str();  // Convert to string
 }
 
-#endif //FILE_READER_H
+#endif //FLUENTC_FILE_READER_H

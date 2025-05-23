@@ -1,0 +1,51 @@
+/*
+    The Fluent Programming Language
+    -----------------------------------------------------
+    This code is released under the GNU GPL v3 license.
+    For more information, please visit:
+    https://www.gnu.org/licenses/gpl-3.0.html
+    -----------------------------------------------------
+    Copyright (c) 2025 Rodrigo R. & All Fluent Contributors
+    This program comes with ABSOLUTELY NO WARRANTY.
+    For details type `fluent l`. This is free software,
+    and you are welcome to redistribute it under certain
+    conditions; type `fluent l -f` for details.
+*/
+
+//
+// Created by rodrigo on 5/20/25.
+//
+
+#ifndef FLUENTC_BACKEND_H
+#define FLUENTC_BACKEND_H
+#include <fluent/file_code/file_code.h>
+#include <llvm/IR/IRBuilder.h>
+
+#include "feature/ref/ref.h"
+#include "feature/function/function.h"
+#include "feature/link/link.h"
+
+inline void do_compile(
+    llvm::LLVMContext &context,
+    llvm::Module *module,
+    llvm::IRBuilder<> &builder,
+    const fluent::file_code::FileCode *code
+)
+{
+    // Make sure we have a main function
+    fluent::util::assert_eq(code->functions.contains("main"), true);
+
+    // Create a ref map
+    ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> refs;
+
+    // Process all refs
+    process_refs(context, module, code, refs);
+
+    // Add all links
+    process_links(context, module, code);
+
+    // Process all functions
+    process_functions(context, module, builder, code, refs);
+}
+
+#endif //FLUENTC_BACKEND_H
