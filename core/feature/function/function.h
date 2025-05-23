@@ -65,10 +65,20 @@ inline void process_functions(
 
         // Name the arguments
         auto fn_args = func->arg_begin();
+        size_t i = 0;
         for (const auto &[name, _] : fun->params)
         {
             // Convert the arg type and push it
             fn_args->setName(name.data());
+            llvm::Value *param = func->getArg(0);
+
+            // Insert to the variables
+            variables[name] = Variable{
+                .type = param->getType(),
+                .value = param,
+            };
+
+            i++;
             fn_args++;
         }
 
