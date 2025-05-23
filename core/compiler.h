@@ -39,7 +39,7 @@ inline void compile(const char *path, const char *output_path, size_t optimizati
     // Parse the code
     auto tokens = fluent::lexer::tokenize(file);
     const auto ast = fluent::parser::parse_code(&tokens);
-    auto code = fluent::file_code::convert_code(ast);
+    const auto code = fluent::file_code::convert_code(ast);
 
     // Store the IR in a string
     std::string ir;
@@ -47,7 +47,7 @@ inline void compile(const char *path, const char *output_path, size_t optimizati
 
     // Initialize the environment
     llvm::LLVMContext context;
-    auto module = new llvm::Module("fluent", context);
+    const auto module = new llvm::Module("fluent", context);
     llvm::IRBuilder builder(context);
 
     do_compile(context, module, builder, &code);
