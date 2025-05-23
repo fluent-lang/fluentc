@@ -28,6 +28,13 @@ FetchContent_Declare(
         GIT_TAG        master
 )
 
+FetchContent_Declare(
+        cpp-subprocess
+        GIT_REPOSITORY https://github.com/arun11299/cpp-subprocess.git
+        GIT_TAG        master
+)
+
+FetchContent_MakeAvailable(cpp-subprocess)
 FetchContent_MakeAvailable(unordered_dense)
 FetchContent_MakeAvailable(fluent_parser)
 FetchContent_MakeAvailable(cli)
@@ -58,7 +65,8 @@ add_executable(fluentc main.cpp
         core/feature/ret/ret.h
         table/variable.h
         core/feature/expr/expr.h
-        core/feature/call/call.h)
+        core/feature/call/call.h
+        reader/version_picker.h)
 
 # Get the LLVM libraries using llvm-config
 execute_process(COMMAND llvm-config --libs all OUTPUT_VARIABLE LLVM_LIBS_STRING OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -78,3 +86,4 @@ target_link_libraries(fluentc PRIVATE unordered_dense)
 target_link_libraries(fluentc PRIVATE fluent_parser)
 target_link_libraries(fluentc PRIVATE cli)
 target_link_libraries(fluentc PRIVATE fluent_libc)
+target_link_libraries(fluentc PRIVATE cpp-subprocess::subprocess)
