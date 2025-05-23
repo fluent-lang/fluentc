@@ -65,6 +65,10 @@ ankerl::unordered_dense::map<std::string, std::shared_ptr<fluent::cli::Flag>> ge
 
 int main(const int argc, const char** argv)
 {
+#ifdef _WIN32
+    throw std::runtime_error("Non POSIX-compliant systems are not supported yet.");
+#endif
+
     // Get the flags
     auto flags = get_flags();
     // Parse argv
