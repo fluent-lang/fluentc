@@ -21,9 +21,10 @@
 #include <fluent/file_code/file_code.h>
 #include <llvm/IR/IRBuilder.h>
 
-#include "feature/ref/ref.h"
 #include "feature/function/function.h"
 #include "feature/link/link.h"
+#include "feature/mod/mod.h"
+#include "feature/ref/ref.h"
 
 namespace fluent::compiler
 {
@@ -37,7 +38,7 @@ namespace fluent::compiler
         // Make sure we have a main function
         fluent::util::assert_eq(code->functions.contains("main"), true);
 
-        // Create a ref map
+        // Create a ref and mod maps
         ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> refs;
 
         // Process all refs
@@ -45,6 +46,9 @@ namespace fluent::compiler
 
         // Add all links
         rule::process_links(context, module, code);
+
+        // Process all mods
+        rule::process_mods(context, code);
 
         // Process all functions
         rule::process_functions(context, module, builder, code, refs);
