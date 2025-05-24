@@ -20,7 +20,7 @@
 #define FEATURE_MOD_H
 
 #include "../../../util/triple.h"
-#include "../../types/types .h"
+#include "../../types/types.h"
 #include "fluent/file_code/file_code.h"
 
 namespace fluent::compiler::rule
@@ -36,7 +36,7 @@ namespace fluent::compiler::rule
         for (const auto &type : mod->types)
         {
             // Convert the type and push it
-            const auto result = convert_type(context, type, false);
+            const auto result = types::convert_type(context, type, false);
 
             // Check if we have nullptr
             if (result == nullptr)
