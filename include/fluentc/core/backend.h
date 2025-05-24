@@ -36,7 +36,7 @@ namespace fluent::compiler
     )
     {
         // Make sure we have a main function
-        fluent::util::assert_eq(code->functions.contains("main"), true);
+        util::assert_eq(code->functions.contains("main"), true);
 
         // Create a ref and mod maps
         ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> refs;
