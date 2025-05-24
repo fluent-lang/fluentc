@@ -23,7 +23,7 @@
 
 #include "cpp-subprocess/subprocess.hpp"
 
-namespace fluent::compiler::util
+namespace fluent::util
 {
     inline void exec_command(
         const std::vector<std::string> &args,

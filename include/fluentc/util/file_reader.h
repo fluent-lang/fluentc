@@ -23,7 +23,7 @@
 #include <sstream>
 #include <string>
 
-namespace fluent::compiler::util
+namespace fluent::util
 {
     inline std::string read_file(const char *& path)
     {
