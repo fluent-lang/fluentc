@@ -22,23 +22,25 @@ Once the installer shows that the installation was successful, you may need to r
 
 ---
 
-## 📚 Supported architectures
+## 📚 Supported Operating Systems
 
-Not all architectures are supported by the Fluent compiler.
-The following architectures are supported:
+Most of the Fluent features are supported on the following operating systems:
 
-| Operating System | Architecture | Supported               |
-|------------------|--------------|-------------------------|
-| Linux            | x86_64       | ✅                       |
-| Linux            | x86          | ✅                       |
-| Linux            | ARM          | ✅                       |
-| Linux            | ARM64        | ✅                       |
-| macOS            | x86_64       | Still implementing      |
-| macOS            | ARM64        | Still implementing      |
-| Windows          | x86_64       | Scheduled (after macOS) |
-| Windows          | x86          | Scheduled (after macOS) |
-| Windows          | ARM          | Scheduled (after macOS) |
-| Windows          | ARM64        | Scheduled (after macOS) |
+- **Windows 10+** (32, 64-bit & ARM)
+- **Linux** (x86_64, ARM64)
+- **macOS** (x86_64, ARM64)
+- **Almost all BSD-based systems** (e.g. FreeBSD, OpenBSD, NetBSD)
+- **Android** (ARM64)
+- **iOS** (ARM64)
+- **Raspberry Pi** (ARM64)
+
+Requirements for compilation:
+- **Windows**: LLVM, Clang, and Visual Studio Build Tools with C++ support installed.
+- **Mac-O systems**: LLVM and Clang installed.
+- **Other POSIX-compliant systems**: GCC (Commonly pre-installed) and LLVM (Clang is not required).
+
+> **Note**: Even though Windows is supported natively, it is highly recommended to use WSL instead
+> because it is much faster to set up and use.
 
 ---
 
