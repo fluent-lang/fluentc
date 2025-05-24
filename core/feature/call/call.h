@@ -28,7 +28,6 @@ inline llvm::Value *process_call(
     llvm::IRBuilder<> &builder,
     const std::shared_ptr<fluent::parser::AST> &call,
     const ankerl::unordered_dense::map<std::string_view, fluent::compiler::variable::Variable> &variables,
-    const fluent::file_code::FileCode *code,
     const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs
 )
 {

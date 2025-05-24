@@ -47,7 +47,6 @@ inline llvm::Value *process_expr(
                 builder,
                 first_child,
                 variables,
-                code,
                 refs
             );
         }
