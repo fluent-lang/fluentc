@@ -61,7 +61,7 @@ add_executable(fluentc main.cpp
         include/fluentc/core/rule/link/link.h
         include/fluentc/core/rule/function/function.h
         include/fluentc/core/rule/ref/ref.h
-        "include/fluentc/core/types/types .h"
+        "include/fluentc/core/types/types.h"
         include/fluentc/core/rule/ret/ret.h
         include/fluentc/variable/variable.h
         include/fluentc/core/rule/expr/expr.h
