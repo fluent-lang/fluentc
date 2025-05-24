@@ -19,8 +19,6 @@
 #ifndef FEATURE_MOD_H
 #define FEATURE_MOD_H
 
-#include <llvm/IR/Module.h>
-
 #include "../../types/types .h"
 #include "fluent/file_code/file_code.h"
 
@@ -79,7 +77,7 @@ namespace fluent::compiler::rule
         }
 
         // Process all modules in the queue
-        while (queue.empty())
+        while (!queue.empty())
         {
             // Get the module
             const auto &[name, mod] = queue.back();
