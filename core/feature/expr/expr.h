@@ -30,7 +30,7 @@ inline llvm::Value *process_expr(
     llvm::IRBuilder<> &builder,
     const fluent::file_code::FileCode *code,
     const std::shared_ptr<fluent::parser::AST> &expr,
-    const ankerl::unordered_dense::map<std::string_view, Variable> &variables,
+    const ankerl::unordered_dense::map<std::string_view, fluent::compiler::variable::Variable> &variables,
     const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs
 )
 {

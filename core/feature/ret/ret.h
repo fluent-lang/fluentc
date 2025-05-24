@@ -22,7 +22,7 @@
 inline void process_ret(
     llvm::IRBuilder<> &builder,
     const std::shared_ptr<fluent::parser::AST> &child,
-    const ankerl::unordered_dense::map<std::string_view, Variable> &variables,
+    const ankerl::unordered_dense::map<std::string_view, fluent::compiler::variable::Variable> &variables,
     const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs
 )
 {
