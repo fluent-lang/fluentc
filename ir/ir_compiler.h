@@ -25,6 +25,7 @@
 #include <llvm/Support/raw_ostream.h>
 
 #include "../state/state .h"
+#include "../util/command.h"
 #include "ir_linker.h"
 #ifndef _WIN32
 #   include <unistd.h>
@@ -63,35 +64,64 @@ inline void compile_ir(
     emit(fluent::compiler::state::Compiling, "program");
 
     // Call the LLVM compiler
-    auto p = subprocess::Popen(
+    exec_command(
         {
             "llc",
             std::format("-O{}", optimization_level),
+            "-relocation-model=pic",
             "-filetype=obj",
             linked_path,
             "-o",
             output_obj_path
         },
-        subprocess::output{subprocess::PIPE}
+        "Error: LLVM Backend failed"
     );
-    const auto [fst, snd] = p.communicate();
-
-    // Check if we have an error code
-    if (p.retcode() != 0)
-    {
-        puts("LLVM Backend error:");
-        puts(fst.buf.data());
-        exit(1);
-    }
 
     // Handle POSIX and Windows
 #   if defined(__APPLE__)
-    // MacOS, todo!()
+    // Make sure we have clang installed
+    if (
+        const int result = system("clang --version > /dev/null 2>&1");
+        result != 0
+    )
+    {
+        throw std::runtime_error("Error: Clang is not installed. Please install it using `brew install llvm`.");
+    }
+
+    // Invoke clang directly
+    exec_command(
+        {
+            "clang",
+            "-o",
+            output_path,
+            output_obj_path
+        },
+        "Error: LLVM Backend failed"
+    );)
 #  elif defined(_POSIX_VERSION)
     // POSIX compliant systems that aren't macOS
+    // Make sure GCC is installed
+    if (
+        const auto result = system("gcc --version > /dev/null 2>&1");
+        result != 0
+    )
+    {
+        // Very rare case, as GCC is installed by default in most systems
+        throw std::runtime_error("Error: GCC is not installed. Please install it using your package manager.");
+    }
 
+    // Invoke GCC directly
+    exec_command(
+        {
+            "gcc",
+            "-o",
+            output_path,
+            output_obj_path
+        },
+        "Error: LLVM Backend failed"
+    );
 #   elif defined(_WIN32)
-    // Windows, todo!()
+    throw std::runtime("Error: Fluent does not support Windows, and might never support it, please consider MinGW or WSL");
 #   else
     throw std::runtime_error("Error: Unsupported platform. Please use macOS or any other POSIX-Compliant system (Or Windows)");
 #   endif

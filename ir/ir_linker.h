@@ -48,19 +48,11 @@ inline std::string link_ir(
     args.push_back(output_file);
 
     // Call the llvm-link command
-    subprocess::Popen p(
+    exec_command(
         args,
-        subprocess::output{subprocess::PIPE},
-        subprocess::input{subprocess::PIPE}
+        "Error: LLVM Backend failed"
     );
 
-    // Handle errors
-    if (p.wait() != 0)
-    {
-        throw std::runtime_error("Error: Could not link modules");
-    }
-
-    fluent::compiler::state::done();
     return output_file;
 }
 

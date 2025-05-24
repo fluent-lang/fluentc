@@ -71,7 +71,8 @@ add_executable(fluentc main.cpp
         ir/ir_linker.h
         ansi/ansi.h
         "state/state .h"
-        util/locator.h)
+        util/command.h
+        util/str_ends_with.h)
 
 # Get the LLVM libraries using llvm-config
 execute_process(COMMAND llvm-config --libs all OUTPUT_VARIABLE LLVM_LIBS_STRING OUTPUT_STRIP_TRAILING_WHITESPACE)
