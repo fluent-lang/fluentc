@@ -108,7 +108,7 @@ namespace fluent::compiler::rule
             builder.SetInsertPoint(block);
 
             // Iterate over the function's body
-            for (const auto &child : fluent::util::try_unwrap(fun->body->children))
+            for (const auto &child : util::try_unwrap(fun->body->children))
             {
                 switch (child->rule)
                 {
@@ -143,7 +143,8 @@ namespace fluent::compiler::rule
                             code,
                             child,
                             variables,
-                            refs
+                            refs,
+                            stats
                         );
                     }
                 }

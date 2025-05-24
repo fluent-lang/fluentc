@@ -22,10 +22,10 @@
 #include <llvm/IR/IRBuilder.h>
 
 #include "../stats/stats.h"
-#include "feature/function/function.h"
-#include "feature/link/link.h"
-#include "feature/mod/mod.h"
-#include "feature/ref/ref.h"
+#include "rule/function/function.h"
+#include "rule/link/link.h"
+#include "rule/mod/mod.h"
+#include "rule/ref/ref.h"
 
 namespace fluent::compiler
 {

@@ -58,20 +58,20 @@ add_executable(fluentc main.cpp
         include/fluentc/util/file_reader.h
         include/fluentc/core/compiler.h
         include/fluentc/core/backend.h
-        include/fluentc/core/feature/link/link.h
-        include/fluentc/core/feature/function/function.h
-        include/fluentc/core/feature/ref/ref.h
+        include/fluentc/core/rule/link/link.h
+        include/fluentc/core/rule/function/function.h
+        include/fluentc/core/rule/ref/ref.h
         "include/fluentc/core/types/types .h"
-        include/fluentc/core/feature/ret/ret.h
+        include/fluentc/core/rule/ret/ret.h
         include/fluentc/variable/variable.h
-        include/fluentc/core/feature/expr/expr.h
-        include/fluentc/core/feature/call/call.h
+        include/fluentc/core/rule/expr/expr.h
+        include/fluentc/core/rule/call/call.h
         include/fluentc/ir/ir_compiler.h
         include/fluentc/ir/ir_linker.h
         include/fluentc/ansi/ansi.h
         "include/fluentc/state/state .h"
         include/fluentc/util/command.h
-        include/fluentc/core/feature/mod/mod.h
+        include/fluentc/core/rule/mod/mod.h
         include/fluentc/util/triple.h
         include/fluentc/stats/stats.h
 )
