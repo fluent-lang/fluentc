@@ -19,6 +19,7 @@
 #ifndef FEATURE_MOD_H
 #define FEATURE_MOD_H
 
+#include "../../../util/triple.h"
 #include "../../types/types .h"
 #include "fluent/file_code/file_code.h"
 
@@ -63,7 +64,7 @@ namespace fluent::compiler::rule
     {
         // Since order of dependencies is not guaranteed,
         // we need to use a vector to queue all modules
-        std::vector<std::pair<std::string_view, std::shared_ptr<file_code::Mod>>> queue;
+        std::vector<util::Triple<std::string_view, std::shared_ptr<file_code::Mod>, bool>> queue;
 
         // Iterate over all modules and queue only what's needed
         for (const auto &[name, mod] : code->mods)
@@ -72,7 +73,7 @@ namespace fluent::compiler::rule
             if (!process_mod(context, mod, name))
             {
                 // Enqueue the module
-                queue.emplace_back(name, mod);
+                queue.emplace_back(name, mod, false);
             }
         }
 
@@ -80,14 +81,21 @@ namespace fluent::compiler::rule
         while (!queue.empty())
         {
             // Get the module
-            const auto &[name, mod] = queue.back();
+            const auto triple = queue.back();
             queue.pop_back();
 
             // Process the module
-            if (!process_mod(context, mod, name))
+            if (!process_mod(context, triple.second, triple.first))
             {
+                // Make sure the mod was not seen before
+                if (triple.third)
+                {
+                    // Infinite loop detected
+                    throw std::runtime_error("Error: Infinite loop detected - Invalid IR structure");
+                }
+
                 // Enqueue the module again
-                queue.emplace_back(name, mod);
+                queue.emplace_back(triple.first, triple.second, true);
             }
         }
     }
