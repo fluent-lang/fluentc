@@ -23,7 +23,8 @@
 
 inline llvm::Type *convert_type(
     llvm::LLVMContext &context,
-    const fluent::file_code::Type &type
+    const fluent::file_code::Type &type,
+    const bool panic = true
 )
 {
     llvm::Type *result = nullptr;
@@ -54,6 +55,12 @@ inline llvm::Type *convert_type(
     // Make sure we have a valid type
     if (result == nullptr)
     {
+        // Return nullptr on fallback
+        if (!panic)
+        {
+            return nullptr;
+        }
+
         throw std::runtime_error("Error: Could not convert type");
     }
 
