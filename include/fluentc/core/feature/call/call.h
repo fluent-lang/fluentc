@@ -23,47 +23,50 @@
 #include "../../../variable/variable.h"
 #include "fluent/file_code/file_code.h"
 
-inline llvm::Value *process_call(
-    const llvm::Module *module,
-    llvm::IRBuilder<> &builder,
-    const std::shared_ptr<fluent::parser::AST> &call,
-    const ankerl::unordered_dense::map<std::string_view, fluent::compiler::variable::Variable> &variables,
-    const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
-    const bool is_construct = false
-)
+namespace fluent::compiler::rule
 {
-    // Get the children
-    const auto &children = fluent::util::try_unwrap(call->children);
-
-    // Get the function's name
-    const auto &name = children[0];
-
-    // Collect the arguments
-    std::vector<llvm::Value *> args;
-
-    for (size_t i = 1; i < children.size(); ++i)
+    inline llvm::Value *process_call(
+        const llvm::Module *module,
+        llvm::IRBuilder<> &builder,
+        const std::shared_ptr<parser::AST> &call,
+        const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
+        const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
+        const bool is_construct = false
+    )
     {
-        // Get the identifier
-        const auto &id = children[i];
+        // Get the children
+        const auto &children = util::try_unwrap(call->children);
 
-        // Get the variable
-        const auto id_val = fluent::util::try_unwrap(id->value);
-        args.push_back(find_value(variables, refs, id_val));
+        // Get the function's name
+        const auto &name = children[0];
+
+        // Collect the arguments
+        std::vector<llvm::Value *> args;
+
+        for (size_t i = 1; i < children.size(); ++i)
+        {
+            // Get the identifier
+            const auto &id = children[i];
+
+            // Get the variable
+            const auto id_val = util::try_unwrap(id->value);
+            args.push_back(find_value(variables, refs, id_val));
+        }
+
+        if (is_construct)
+        {
+            // TODO!
+        }
+
+        // Create a function call
+        llvm::Function *function = module->getFunction(util::try_unwrap(name->value).data());
+        if (!function)
+        {
+            throw std::runtime_error("Error: Function not found");
+        }
+
+        return builder.CreateCall(function, args);
     }
-
-    if (is_construct)
-    {
-        // TODO!
-    }
-
-    // Create a function call
-    llvm::Function *function = module->getFunction(fluent::util::try_unwrap(name->value).data());
-    if (!function)
-    {
-        throw std::runtime_error("Error: Function not found");
-    }
-
-    return builder.CreateCall(function, args);
 }
 
 #endif //FLUENTC_CALL_H
