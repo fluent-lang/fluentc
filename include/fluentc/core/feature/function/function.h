@@ -34,16 +34,12 @@ namespace fluent::compiler::rule
         llvm::IRBuilder<> &builder,
         const file_code::FileCode *code,
         const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs
-    )
-    {
-        // Iterate over all functions
+    ) {
+        // Since order of dependencies is not guaranteed, we have
+        // to define all the functions' signatures beforehand
+        ankerl::unordered_dense::map<std::string_view, std::pair<bool, llvm::Function *>> function_signatures;
         for (const auto &[name, fun] : code->functions)
         {
-            emit(state::Building, name.data());
-
-            // Create a variable map
-            ankerl::unordered_dense::map<std::string_view, variable::Variable> variables;
-
             // Convert the return type to a LLVM type
             llvm::Type *return_type;
             const bool is_main = strcmp(name.data(), "main") == 0;
@@ -69,11 +65,31 @@ namespace fluent::compiler::rule
 
             // Name the arguments
             auto fn_args = func->arg_begin();
-            size_t i = 0;
             for (const auto &[name, _] : fun->params)
             {
                 // Convert the arg type and push it
                 fn_args->setName(name.data());
+                fn_args++;
+            }
+
+            function_signatures[name] = { is_main, func };
+        }
+
+        // Iterate over all functions
+        for (const auto &[name, fun] : code->functions)
+        {
+            emit(state::Building, name.data());
+
+            // Create a variable map
+            ankerl::unordered_dense::map<std::string_view, variable::Variable> variables;
+            const auto [is_main, func] = function_signatures[name];
+
+            // Push all params to the variable map
+            auto fn_args = func->arg_begin();
+            size_t i = 0;
+            for (const auto &[name, _] : fun->params)
+            {
+                // Convert the arg type and push it
                 llvm::Value *param = func->getArg(0);
 
                 // Insert to the variables
