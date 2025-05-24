@@ -33,7 +33,8 @@ namespace fluent::compiler::rule
         llvm::Module *module,
         llvm::IRBuilder<> &builder,
         const file_code::FileCode *code,
-        const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs
+        const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
+        stats::CompileTimeStats &stats
     ) {
         // Since order of dependencies is not guaranteed, we have
         // to define all the functions' signatures beforehand

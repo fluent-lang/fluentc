@@ -21,6 +21,7 @@
 #include <fluent/file_code/file_code.h>
 #include <llvm/IR/IRBuilder.h>
 
+#include "../stats/stats.h"
 #include "feature/function/function.h"
 #include "feature/link/link.h"
 #include "feature/mod/mod.h"
@@ -41,6 +42,9 @@ namespace fluent::compiler
         // Create a ref map
         ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> refs;
 
+        // Create a stats object
+        stats::CompileTimeStats stats;
+
         // Process all refs
         rule::process_refs(context, module, code, refs);
 
@@ -51,7 +55,7 @@ namespace fluent::compiler
         rule::process_mods(context, code);
 
         // Process all functions
-        rule::process_functions(context, module, builder, code, refs);
+        rule::process_functions(context, module, builder, code, refs, stats);
     }
 }
 
