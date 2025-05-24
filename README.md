@@ -36,7 +36,7 @@ Most of the Fluent features are supported on the following operating systems:
 
 Requirements for compilation:
 - **Windows**: LLVM, Clang, and Visual Studio Build Tools with C++ support installed.
-- **Mac-O systems**: LLVM and Clang installed.
+- **Mach-O systems**: LLVM and Clang installed.
 - **Other POSIX-compliant systems**: GCC (Commonly pre-installed) and LLVM (Clang is not required).
 
 > **Note**: Even though Windows is supported natively, it is highly recommended to use WSL instead
