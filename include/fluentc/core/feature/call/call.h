@@ -28,7 +28,8 @@ inline llvm::Value *process_call(
     llvm::IRBuilder<> &builder,
     const std::shared_ptr<fluent::parser::AST> &call,
     const ankerl::unordered_dense::map<std::string_view, fluent::compiler::variable::Variable> &variables,
-    const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs
+    const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
+    const bool is_construct = false
 )
 {
     // Get the children
@@ -48,6 +49,11 @@ inline llvm::Value *process_call(
         // Get the variable
         const auto id_val = fluent::util::try_unwrap(id->value);
         args.push_back(find_value(variables, refs, id_val));
+    }
+
+    if (is_construct)
+    {
+        // TODO!
     }
 
     // Create a function call

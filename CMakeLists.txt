@@ -71,6 +71,9 @@ add_executable(fluentc main.cpp
         include/fluentc/ansi/ansi.h
         "include/fluentc/state/state .h"
         include/fluentc/util/command.h
+        include/fluentc/core/feature/mod/mod.h
+        include/fluentc/util/triple.h
+        include/fluentc/stats/stats.h
 )
 
 # Get the LLVM libraries using llvm-config

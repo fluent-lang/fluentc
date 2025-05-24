@@ -24,38 +24,54 @@
 
 #include "../call/call.h"
 
-inline llvm::Value *process_expr(
-    llvm::LLVMContext &context,
-    const llvm::Module *module,
-    llvm::IRBuilder<> &builder,
-    const fluent::file_code::FileCode *code,
-    const std::shared_ptr<fluent::parser::AST> &expr,
-    const ankerl::unordered_dense::map<std::string_view, fluent::compiler::variable::Variable> &variables,
-    const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs
-)
+namespace fluent::compiler::rule
 {
-    // Get the children
-    const auto &children = fluent::util::try_unwrap(expr->children);
-
-    // Get the first children
-    switch (const auto &first_child = children[0]; first_child->rule)
+    inline llvm::Value *process_expr(
+        llvm::LLVMContext &context,
+        const llvm::Module *module,
+        llvm::IRBuilder<> &builder,
+        const file_code::FileCode *code,
+        const std::shared_ptr<parser::AST> &expr,
+        const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
+        const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
+        stats::CompileTimeStats &stats
+    )
     {
-        case fluent::parser::Call:
+        // Get the children
+        const auto &children = util::try_unwrap(expr->children);
+
+        // Get the first children
+        switch (const auto &first_child = children[0]; first_child->rule)
         {
-            return process_call(
-                module,
-                builder,
-                first_child,
-                variables,
-                refs
-            );
+            case parser::Call:
+            {
+                return process_call(
+                    module,
+                    builder,
+                    first_child,
+                    variables,
+                    refs
+                );
+            }
+
+            case parser::Construct:
+            {
+                return process_call(
+                    module,
+                    builder,
+                    first_child,
+                    variables,
+                    refs,
+                    true
+                );
+            }
+
+            default:
+                break;
         }
 
-        default:
-            break;
+        return nullptr;
     }
-
-    return nullptr;
 }
 
 #endif //FLUENTC_EXPR_H
