@@ -78,7 +78,7 @@ inline void compile_ir(
     );
 
     // Handle POSIX and Windows
-#   if defined(__APPLE__)
+#   if defined(__APPLE__) || defined(_WIN32)
     // Make sure we have clang installed
     if (
         const int result = system("clang --version > /dev/null 2>&1");
@@ -120,8 +120,6 @@ inline void compile_ir(
         },
         "Error: LLVM Backend failed"
     );
-#   elif defined(_WIN32)
-    throw std::runtime("Error: Fluent does not support Windows, and might never support it, please consider MinGW or WSL");
 #   else
     throw std::runtime_error("Error: Unsupported platform. Please use macOS or any other POSIX-Compliant system (Or Windows)");
 #   endif
