@@ -17,7 +17,7 @@
 #define PROGRAM_DESC "The Fluent Language Compiler"
 #define PROGRAM_VERSION "1.0.0"
 
-#include "core/compiler.h"
+#include "include/fluentc/core/compiler.h"
 #include "fluent/cli/algorithm/help_generator/help_generator.h"
 #include "fluent/cli/argv_impl.h"
 #include "fluent/cli/flag/flag.h"

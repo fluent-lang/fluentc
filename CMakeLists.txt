@@ -55,22 +55,22 @@ add_definitions(${LLVM_DEFINITIONS})
 
 # Define your executable
 add_executable(fluentc main.cpp
-        util/file_reader.h
-        core/compiler.h
-        core/backend.h
-        core/feature/link/link.h
-        core/feature/function/function.h
-        core/feature/ref/ref.h
-        "core/types/types .h"
-        core/feature/ret/ret.h
-        variable/variable.h
-        core/feature/expr/expr.h
-        core/feature/call/call.h
-        ir/ir_compiler.h
-        ir/ir_linker.h
-        ansi/ansi.h
-        "state/state .h"
-        util/command.h
+        include/fluentc/util/file_reader.h
+        include/fluentc/core/compiler.h
+        include/fluentc/core/backend.h
+        include/fluentc/core/feature/link/link.h
+        include/fluentc/core/feature/function/function.h
+        include/fluentc/core/feature/ref/ref.h
+        "include/fluentc/core/types/types .h"
+        include/fluentc/core/feature/ret/ret.h
+        include/fluentc/variable/variable.h
+        include/fluentc/core/feature/expr/expr.h
+        include/fluentc/core/feature/call/call.h
+        include/fluentc/ir/ir_compiler.h
+        include/fluentc/ir/ir_linker.h
+        include/fluentc/ansi/ansi.h
+        "include/fluentc/state/state .h"
+        include/fluentc/util/command.h
 )
 
 # Get the LLVM libraries using llvm-config
