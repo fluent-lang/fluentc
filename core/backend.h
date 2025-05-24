@@ -25,27 +25,30 @@
 #include "feature/function/function.h"
 #include "feature/link/link.h"
 
-inline void do_compile(
-    llvm::LLVMContext &context,
-    llvm::Module *module,
-    llvm::IRBuilder<> &builder,
-    const fluent::file_code::FileCode *code
-)
+namespace fluent::compiler
 {
-    // Make sure we have a main function
-    fluent::util::assert_eq(code->functions.contains("main"), true);
+    inline void gencode(
+        llvm::LLVMContext &context,
+        llvm::Module *module,
+        llvm::IRBuilder<> &builder,
+        const file_code::FileCode *code
+    )
+    {
+        // Make sure we have a main function
+        fluent::util::assert_eq(code->functions.contains("main"), true);
 
-    // Create a ref map
-    ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> refs;
+        // Create a ref map
+        ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> refs;
 
-    // Process all refs
-    process_refs(context, module, code, refs);
+        // Process all refs
+        rule::process_refs(context, module, code, refs);
 
-    // Add all links
-    process_links(context, module, code);
+        // Add all links
+        rule::process_links(context, module, code);
 
-    // Process all functions
-    process_functions(context, module, builder, code, refs);
+        // Process all functions
+        rule::process_functions(context, module, builder, code, refs);
+    }
 }
 
 #endif //FLUENTC_BACKEND_H

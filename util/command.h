@@ -23,30 +23,33 @@
 
 #include "cpp-subprocess/subprocess.hpp"
 
-inline void exec_command(
-    const std::vector<std::string> &args,
-    const char *failure_msg = "Error: Command failed",
-    const bool panic = true
-)
+namespace fluent::compiler::util
 {
-    // Invoke the command
-    auto p = subprocess::Popen(
-        args,
-        subprocess::output{subprocess::PIPE}
-    );
-    const auto [fst, snd] = p.communicate();
-
-    // Check if we have an error code
-    if (p.wait() != 0)
+    inline void exec_command(
+        const std::vector<std::string> &args,
+        const char *failure_msg = "Error: Command failed",
+        const bool panic = true
+    )
     {
-        if (!panic)
-        {
-            return;
-        }
+        // Invoke the command
+        auto p = subprocess::Popen(
+            args,
+            subprocess::output{subprocess::PIPE}
+        );
+        const auto [fst, snd] = p.communicate();
 
-        puts(failure_msg);
-        puts(fst.buf.data());
-        exit(1);
+        // Check if we have an error code
+        if (p.wait() != 0)
+        {
+            if (!panic)
+            {
+                return;
+            }
+
+            puts(failure_msg);
+            puts(fst.buf.data());
+            exit(1);
+        }
     }
 }
 

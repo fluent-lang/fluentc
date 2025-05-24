@@ -91,6 +91,6 @@ int main(const int argc, const char** argv)
     }
 
     // Call the compiler
-    compile(args->strings["path"], args->strings["out"], optimization_level);
+    fluent::compiler::compile(args->strings["path"], args->strings["out"], optimization_level);
     return 0;
 }

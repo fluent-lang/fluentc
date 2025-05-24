@@ -32,38 +32,41 @@
 #include "../state/state .h"
 #include "backend.h"
 
-inline void compile(
-    const char *path,
-    const char *output_path,
-    const size_t optimization_level
-)
+namespace fluent::compiler
 {
-    // Read the file
-    const auto file = read_file(path);
-    fluent::util::assert_eq(optimization_level > 3, false); // Ensure we have a valid optimization level (0-3)
+    inline void compile(
+        const char *path,
+        const char *output_path,
+        const size_t optimization_level
+    )
+    {
+        // Read the file
+        const auto file = util::read_file(path);
+        fluent::util::assert_eq(optimization_level > 3, false); // Ensure we have a valid optimization level (0-3)
 
-    // Parse the code
-    emit(fluent::compiler::state::Lexing, nullptr);
-    auto tokens = fluent::lexer::tokenize(file);
-    emit(fluent::compiler::state::Parsing, nullptr);
-    const auto ast = fluent::parser::parse_code(&tokens);
-    const auto code = fluent::file_code::convert_code(ast);
+        // Parse the code
+        emit(state::Lexing, nullptr);
+        auto tokens = lexer::tokenize(file);
+        emit(state::Parsing, nullptr);
+        const auto ast = parser::parse_code(&tokens);
+        const auto code = file_code::convert_code(ast);
 
-    // Store the IR in a string
-    std::string ir;
-    llvm::raw_string_ostream stream(ir);
+        // Store the IR in a string
+        std::string ir;
+        llvm::raw_string_ostream stream(ir);
 
-    // Initialize the environment
-    llvm::LLVMContext context;
-    const auto module = new llvm::Module("fluent", context);
-    llvm::IRBuilder builder(context);
+        // Initialize the environment
+        llvm::LLVMContext context;
+        const auto module = new llvm::Module("fluent", context);
+        llvm::IRBuilder builder(context);
 
-    do_compile(context, module, builder, &code);
-    module->print(stream, nullptr);
+        gencode(context, module, builder, &code);
+        module->print(stream, nullptr);
 
-    // Call the LLVM Backend
-    compile_ir(output_path, optimization_level, stream, code);
-    delete module; // Delete the module
+        // Call the LLVM Backend
+        compile_ir(output_path, optimization_level, stream, code);
+        delete module; // Delete the module
+    }
 }
 
 #endif //COMPILER_H

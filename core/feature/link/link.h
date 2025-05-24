@@ -23,47 +23,50 @@
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/IRReader/IRReader.h>
 
-inline void process_links(
-    llvm::LLVMContext &context,
-    llvm::Module *module,
-    const fluent::file_code::FileCode *code
-)
+namespace fluent::compiler::rule
 {
-    // Iterate over all links
-    for (const auto &link : code->links)
+    inline void process_links(
+        llvm::LLVMContext &context,
+        llvm::Module *module,
+        const file_code::FileCode *code
+    )
     {
-        emit(fluent::compiler::state::Building, link.data());
-        // Parse the IR file
-        llvm::SMDiagnostic err;
-        const auto link_module = parseIRFile(link.data(), err, context);
-        if (!link_module)
+        // Iterate over all links
+        for (const auto &link : code->links)
         {
-            // Print an error message
-            err.print("fluent", llvm::errs());
-            throw std::runtime_error("Error: Could not parse link");
-        }
-
-        // Insert the link module into the current module
-        for (auto &function : link_module->functions())
-        {
-            // Check if the function is already defined
-            if (module->getFunction(function.getName()))
+            emit(state::Building, link.data());
+            // Parse the IR file
+            llvm::SMDiagnostic err;
+            const auto link_module = parseIRFile(link.data(), err, context);
+            if (!link_module)
             {
-                // Print a warning message
-                printf("Warning: Function %s already defined\n", function.getName().str().c_str());
+                // Print an error message
+                err.print("fluent", llvm::errs());
+                throw std::runtime_error("Error: Could not parse link");
             }
-            else
-            {
-                // Get the function type from the original function
-                llvm::FunctionType *funcType = function.getFunctionType();
 
-                // Create a function declaration (without body) in the current module
-                llvm::Function::Create(
-                    funcType,
-                    llvm::Function::ExternalLinkage,
-                    function.getName(),
-                    module
-                );
+            // Insert the link module into the current module
+            for (auto &function : link_module->functions())
+            {
+                // Check if the function is already defined
+                if (module->getFunction(function.getName()))
+                {
+                    // Print a warning message
+                    printf("Warning: Function %s already defined\n", function.getName().str().c_str());
+                }
+                else
+                {
+                    // Get the function type from the original function
+                    llvm::FunctionType *funcType = function.getFunctionType();
+
+                    // Create a function declaration (without body) in the current module
+                    llvm::Function::Create(
+                        funcType,
+                        llvm::Function::ExternalLinkage,
+                        function.getName(),
+                        module
+                    );
+                }
             }
         }
     }

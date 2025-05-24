@@ -63,16 +63,15 @@ add_executable(fluentc main.cpp
         core/feature/ref/ref.h
         "core/types/types .h"
         core/feature/ret/ret.h
-        table/variable.h
+        variable/variable.h
         core/feature/expr/expr.h
         core/feature/call/call.h
-        util/version_picker.h
         ir/ir_compiler.h
         ir/ir_linker.h
         ansi/ansi.h
         "state/state .h"
         util/command.h
-        util/str_ends_with.h)
+)
 
 # Get the LLVM libraries using llvm-config
 execute_process(COMMAND llvm-config --libs all OUTPUT_VARIABLE LLVM_LIBS_STRING OUTPUT_STRIP_TRAILING_WHITESPACE)

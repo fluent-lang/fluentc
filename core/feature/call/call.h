@@ -20,14 +20,14 @@
 #define FLUENTC_CALL_H
 #include <llvm/IR/IRBuilder.h>
 
-#include "../../../table/variable.h"
+#include "../../../variable/variable.h"
 #include "fluent/file_code/file_code.h"
 
 inline llvm::Value *process_call(
     const llvm::Module *module,
     llvm::IRBuilder<> &builder,
     const std::shared_ptr<fluent::parser::AST> &call,
-    const ankerl::unordered_dense::map<std::string_view, Variable> &variables,
+    const ankerl::unordered_dense::map<std::string_view, fluent::compiler::variable::Variable> &variables,
     const fluent::file_code::FileCode *code,
     const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs
 )

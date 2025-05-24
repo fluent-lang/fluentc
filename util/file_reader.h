@@ -23,20 +23,23 @@
 #include <sstream>
 #include <string>
 
-inline std::string read_file(const char *& path)
+namespace fluent::compiler::util
 {
-    // Read the file at the specified path
-    std::ifstream file(path);
-    if (!file.is_open())
+    inline std::string read_file(const char *& path)
     {
-        // Print an error message
-        throw std::runtime_error("Error: Could not open file");
-    }
+        // Read the file at the specified path
+        std::ifstream file(path);
+        if (!file.is_open())
+        {
+            // Print an error message
+            throw std::runtime_error("Error: Could not open file");
+        }
 
-    // Read the file contents
-    std::stringstream buffer;
-    buffer << file.rdbuf();  // Read the whole file
-    return buffer.str();  // Convert to string
+        // Read the file contents
+        std::stringstream buffer;
+        buffer << file.rdbuf();  // Read the whole file
+        return buffer.str();  // Convert to string
+    }
 }
 
 #endif //FLUENTC_FILE_READER_H

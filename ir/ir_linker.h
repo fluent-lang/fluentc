@@ -19,41 +19,44 @@
 #ifndef FLUENTC_IR_LINKER_H
 #define FLUENTC_IR_LINKER_H
 
-inline std::string link_ir(
+namespace fluent::compiler
+{
+    inline std::string link_ir(
     const char *output,
     const std::string &ir_path,
-    const fluent::file_code::FileCode &code
+    const file_code::FileCode &code
 )
-{
-    emit(fluent::compiler::state::Linking, "modules");
-
-    // Link all modules using llvm-link
-    std::vector<std::string> args;
-    args.push_back("llvm-link");
-    args.push_back("-S");
-    args.push_back(ir_path.c_str());
-
-    // Add all links
-    for (const auto &link : code.links)
     {
-        args.push_back(link.data());
+        emit(state::Linking, "modules");
+
+        // Link all modules using llvm-link
+        std::vector<std::string> args;
+        args.push_back("llvm-link");
+        args.push_back("-S");
+        args.push_back(ir_path.c_str());
+
+        // Add all links
+        for (const auto &link : code.links)
+        {
+            args.push_back(link.data());
+        }
+
+        // Add the output file
+        const auto &output_file = std::format(
+            "{}_linked.ll",
+            output
+        );
+        args.push_back("-o");
+        args.push_back(output_file);
+
+        // Call the llvm-link command
+        util::exec_command(
+            args,
+            "Error: LLVM Backend failed"
+        );
+
+        return output_file;
     }
-
-    // Add the output file
-    const auto &output_file = std::format(
-        "{}_linked.ll",
-        output
-    );
-    args.push_back("-o");
-    args.push_back(output_file);
-
-    // Call the llvm-link command
-    exec_command(
-        args,
-        "Error: LLVM Backend failed"
-    );
-
-    return output_file;
 }
 
 #endif //FLUENTC_IR_LINKER_H
