@@ -39,7 +39,7 @@ namespace fluent::compiler::rule
         // Iterate over all functions
         for (const auto &[name, fun] : code->functions)
         {
-            emit(fluent::compiler::state::Building, name.data());
+            emit(state::Building, name.data());
 
             // Create a variable map
             ankerl::unordered_dense::map<std::string_view, variable::Variable> variables;
@@ -95,7 +95,7 @@ namespace fluent::compiler::rule
             {
                 switch (child->rule)
                 {
-                    case fluent::parser::Ret:
+                    case parser::Ret:
                     {
                         // Return 0 for the main function
                         if (is_main)
