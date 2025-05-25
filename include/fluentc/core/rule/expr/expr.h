@@ -34,7 +34,8 @@ namespace fluent::compiler::rule
         const std::shared_ptr<parser::AST> &expr,
         const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
         const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
-        stats::CompileTimeStats &stats
+        stats::CompileTimeStats &ct_stats,
+        const bool is_declaration = false
     )
     {
         // Get the children
@@ -47,10 +48,13 @@ namespace fluent::compiler::rule
             {
                 return process_call(
                     module,
+                    context,
                     builder,
                     first_child,
                     variables,
-                    refs
+                    refs,
+                    ct_stats,
+                    is_declaration
                 );
             }
 
@@ -58,11 +62,14 @@ namespace fluent::compiler::rule
             {
                 return process_call(
                     module,
+                    context,
                     builder,
                     first_child,
                     variables,
                     refs,
-                    true
+                    ct_stats,
+                    true,
+                    is_declaration
                 );
             }
 
