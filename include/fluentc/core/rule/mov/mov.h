@@ -23,6 +23,7 @@
 
 #include "../../../variable/variable.h"
 #include "../binary/binary.h"
+#include "../expr/expr.h"
 #include "../take/take.h"
 #include "fluent/parser/ast/ast.h"
 
@@ -41,97 +42,22 @@ namespace fluent::compiler::rule
         const auto &children = util::try_unwrap(child->children);
 
         // Get the variable name, type and expr
-        const auto name = children[0];
+        const auto name = children[0]->value->data();
         const auto type = types::convert_type(context, file_code::process_type(children[1]), ct_stats);
         const auto expr = children[2];
-        llvm::Value *value = nullptr;
-        llvm::AllocaInst *alloca = nullptr;
-
-        // Convert the expression to an LLVM object
-        switch (expr->rule)
-        {
-            case parser::DecLiteral:
-            case parser::NumLiteral:
-            {
-                // Get the value
-                value = llvm::ConstantInt::get(
-                    type,
-                    std::stod(expr->value->data())
-                );
-                break;
-            }
-
-            case parser::Call:
-            {
-                value = process_call(
-                    module,
-                    context,
-                    builder,
-                    child,
-                    variables,
-                    ct_stats,
-                    false,
-                    nullptr
-                );
-
-                break;
-            }
-
-            case parser::Construct:
-            {
-                // Initialize the alloca value
-                alloca = builder.CreateAlloca(type, nullptr, name->value->data());
-
-                value = process_call(
-                    module,
-                    context,
-                    builder,
-                    child,
-                    variables,
-                    ct_stats,
-                    true,
-                    alloca
-                );
-
-                break;
-            }
-
-            case parser::Sub:
-            case parser::Mul:
-            case parser::Div:
-            case parser::Add:
-            case parser::Or:
-            case parser::And:
-            {
-                value = process_binary_opt(
-                    builder,
-                    child,
-                    variables,
-                    ct_stats,
-                    name->value->data(),
-                    child->rule
-                );
-                break;
-            }
-
-            case parser::Take:
-            {
-                value = process_take(
-                    builder,
-                    child,
-                    variables,
-                    ct_stats
-                );
-
-                break;
-            }
-
-            default:
-            {}
-        }
+        const auto [ value, alloc_inst ] = process_expr(
+            module,
+            builder,
+            context,
+            expr,
+            variables,
+            ct_stats,
+            type,
+            name
+        );
 
         // Insert to the variables
-        variables[name->value->data()] = { .type = type, .alloca = alloca, .value = value };
+        variables[name] = { .type = type, .alloca = alloc_inst, .value = value };
     }
 }
 

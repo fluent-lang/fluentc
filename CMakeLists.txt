@@ -76,6 +76,7 @@ add_executable(fluentc main.cpp
         include/fluentc/core/rule/mov/mov.h
         include/fluentc/core/rule/binary/binary.h
         include/fluentc/core/rule/take/take.h
+        include/fluentc/core/rule/expr/expr.h
 )
 
 # Get the LLVM libraries using llvm-config
