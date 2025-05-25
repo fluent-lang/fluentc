@@ -95,14 +95,18 @@ namespace fluent::compiler::rule
                 break;
             }
 
+            case parser::Sub:
+            case parser::Mul:
+            case parser::Div:
             case parser::Add:
             {
-                value = process_add(
+                value = process_binary_opt(
                     builder,
                     child,
                     variables,
                     ct_stats,
-                    name->value->data()
+                    name->value->data(),
+                    child->rule
                 );
                 break;
             }
