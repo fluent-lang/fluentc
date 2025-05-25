@@ -97,14 +97,12 @@ namespace fluent::compiler::rule
 
             case parser::Add:
             {
-                // Initialize the alloca value
-                alloca = builder.CreateAlloca(type, nullptr, name->value->data());
-
-                process_add(
+                value = process_add(
                     builder,
                     child,
                     variables,
-                    ct_stats
+                    ct_stats,
+                    name->value->data()
                 );
                 break;
             }
