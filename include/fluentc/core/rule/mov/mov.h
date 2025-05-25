@@ -23,6 +23,7 @@
 
 #include "../../../variable/variable.h"
 #include "../binary/binary.h"
+#include "../take/take.h"
 #include "fluent/parser/ast/ast.h"
 
 namespace fluent::compiler::rule
@@ -110,6 +111,18 @@ namespace fluent::compiler::rule
                     name->value->data(),
                     child->rule
                 );
+                break;
+            }
+
+            case parser::Take:
+            {
+                value = process_take(
+                    builder,
+                    child,
+                    variables,
+                    ct_stats
+                );
+
                 break;
             }
 
