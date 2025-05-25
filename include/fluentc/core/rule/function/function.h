@@ -155,6 +155,23 @@ namespace fluent::compiler::rule
                         break;
                     }
 
+                    case parser::Construct:
+                    {
+                        process_call(
+                            module,
+                            context,
+                            builder,
+                            child,
+                            variables,
+                            refs,
+                            ct_stats,
+                            true,
+                            nullptr
+                        );
+
+                        break;
+                    }
+
                     default:
                     {}
                 }
