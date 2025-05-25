@@ -22,10 +22,10 @@
 namespace fluent::compiler
 {
     inline std::string link_ir(
-    const char *output,
-    const std::string &ir_path,
-    const file_code::FileCode &code
-)
+        const char *output,
+        const std::string &ir_path,
+        const file_code::FileCode &code
+    )
     {
         emit(state::Linking, "modules");
 
