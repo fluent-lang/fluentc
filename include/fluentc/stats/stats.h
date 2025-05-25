@@ -31,6 +31,7 @@ namespace fluent::compiler::stats
         long requested_vars = 0;
         std::vector<char *> allocated_vars;
         ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> refs;
+        ankerl::unordered_dense::map<std::string_view, llvm::StructType *> mods;
 
     public:
         CompileTimeStats() = default;
@@ -89,6 +90,32 @@ namespace fluent::compiler::stats
 
             // Get the ref
             return refs[name];
+        }
+
+        void insert_mod(
+            const std::string_view &name,
+            llvm::StructType *mod
+        ) {
+            // Check if the mod already exists
+            if (mods.contains(name))
+            {
+                throw std::runtime_error("Error: Mod already exists");
+            }
+
+            // Insert the mod
+            mods[name] = mod;
+        }
+
+        llvm::StructType * get_mod(const std::string_view &name)
+        {
+            // Check if the mod exists
+            if (!mods.contains(name))
+            {
+                throw std::runtime_error("Error: Mod not found");
+            }
+
+            // Get the mod
+            return mods[name];
         }
 
         ~CompileTimeStats()
