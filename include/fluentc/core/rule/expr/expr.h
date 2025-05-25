@@ -77,22 +77,23 @@ namespace fluent::compiler::rule
 
             case parser::Construct:
             {
-                // Initialize the alloca value
-                auto alloca_int = builder.CreateAlloca(type, nullptr, expr_name);
-
-                return
-                {
+                // Let process_call create a new alloca instruction
+                const auto alloca_inst = static_cast<llvm::AllocaInst *>(
                     process_call(
                         module,
                         context,
                         builder,
-                        expr,
-                        variables,
+                        expr, variables,
                         ct_stats,
                         true,
-                        alloca_int
-                    ),
-                    alloca_int
+                        nullptr
+                    )
+                );
+
+                return
+                {
+                    nullptr,
+                    alloca_inst
                 };
             }
 
