@@ -33,7 +33,7 @@ namespace fluent::compiler::rule
         const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
         const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
         stats::CompileTimeStats &ct_stats,
-        const bool is_construct = false,
+        const bool is_construct,
         const bool is_declaration
     )
     {

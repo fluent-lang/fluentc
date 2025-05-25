@@ -53,6 +53,7 @@ namespace fluent::compiler::rule
                     variables,
                     refs,
                     ct_stats,
+                    false,
                     is_declaration
                 );
             }
