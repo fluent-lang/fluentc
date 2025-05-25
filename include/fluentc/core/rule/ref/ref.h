@@ -28,7 +28,7 @@ namespace fluent::compiler::rule
         llvm::LLVMContext &context,
         llvm::Module *module,
         const file_code::FileCode *code,
-        ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs
+        stats::CompileTimeStats &stats
     )
     {
         // Iterate over all refs
@@ -52,7 +52,7 @@ namespace fluent::compiler::rule
 
                     // Set the initializer to the string
                     global->setInitializer(llvm::ConstantDataArray::getString(context, str.data()));
-                    refs[name] = global;
+                    stats.insert_ref(name, global);
 
                     break;
                 }
@@ -72,7 +72,8 @@ namespace fluent::compiler::rule
                         ),
                         name.data()
                     );
-                    refs[name] = global;
+
+                    stats.insert_ref(name, global);
                     break;
                 }
 
@@ -92,7 +93,7 @@ namespace fluent::compiler::rule
                         name.data()
                     );
 
-                    refs[name] = global;
+                    stats.insert_ref(name, global);
                     break;
                 }
 
