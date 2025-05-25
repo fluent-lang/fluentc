@@ -1,5 +1,5 @@
 /*
-    The Fluent Programming Language
+The Fluent Programming Language
     -----------------------------------------------------
     This code is released under the GNU GPL v3 license.
     For more information, please visit:
@@ -31,14 +31,14 @@ namespace fluent::compiler::variable
 
     inline llvm::Value *find_value(
         const ankerl::unordered_dense::map<std::string_view, Variable> &variables,
-        const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
+        stats::CompileTimeStats &ct_stats,
         const std::string_view &name
     )
     {
         // Check if we have a ref
-        if (refs.contains(name))
+        if (ct_stats.has_ref(name))
         {
-            return refs.at(name);
+            return ct_stats.get_ref(name);
         }
 
         // Check if the variable exists
