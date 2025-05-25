@@ -31,7 +31,6 @@ namespace fluent::compiler::rule
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &call,
         const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
-        const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
         stats::CompileTimeStats &ct_stats,
         const bool is_construct,
         llvm::AllocaInst *struct_ptr
@@ -53,7 +52,7 @@ namespace fluent::compiler::rule
 
             // Get the variable
             const auto id_val = util::try_unwrap(id->value);
-            args.push_back(find_value(variables, refs, id_val));
+            args.push_back(find_value(variables, ct_stats, id_val));
         }
 
         if (is_construct)
