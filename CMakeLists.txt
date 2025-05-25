@@ -64,7 +64,6 @@ add_executable(fluentc main.cpp
         "include/fluentc/core/types/types.h"
         include/fluentc/core/rule/ret/ret.h
         include/fluentc/variable/variable.h
-        include/fluentc/core/rule/expr/expr.h
         include/fluentc/core/rule/call/call.h
         include/fluentc/ir/ir_compiler.h
         include/fluentc/ir/ir_linker.h
