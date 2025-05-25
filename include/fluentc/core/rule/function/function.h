@@ -23,6 +23,7 @@
 #include "../../../variable/variable.h"
 #include "../../types/types.h"
 #include "../call/call.h"
+#include "../mov/mov.h"
 #include "../ret/ret.h"
 #include "fluent/file_code/file_code.h"
 
@@ -33,7 +34,6 @@ namespace fluent::compiler::rule
         llvm::Module *module,
         llvm::IRBuilder<> &builder,
         const file_code::FileCode *code,
-        const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
         stats::CompileTimeStats &ct_stats
     ) {
         // Since order of dependencies is not guaranteed, we have
@@ -126,7 +126,7 @@ namespace fluent::compiler::rule
                                 builder,
                                 child,
                                 variables,
-                                refs
+                                ct_stats
                             );
                         }
 
@@ -135,6 +135,15 @@ namespace fluent::compiler::rule
 
                     case parser::Mov:
                     {
+                        process_mov(
+                            module,
+                            builder,
+                            context,
+                            child,
+                            variables,
+                            ct_stats
+                        );
+
                         break;
                     }
 
@@ -146,7 +155,6 @@ namespace fluent::compiler::rule
                             builder,
                             child,
                             variables,
-                            refs,
                             ct_stats,
                             false,
                             nullptr
@@ -163,7 +171,6 @@ namespace fluent::compiler::rule
                             builder,
                             child,
                             variables,
-                            refs,
                             ct_stats,
                             true,
                             nullptr
