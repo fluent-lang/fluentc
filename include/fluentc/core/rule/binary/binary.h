@@ -16,8 +16,8 @@
 // Created by rodrigo on 5/25/25.
 //
 
-#ifndef FLUENTC_RULE_ADD_H
-#define FLUENTC_RULE_ADD_H
+#ifndef FLUENTC_RULE_BINARY_H
+#define FLUENTC_RULE_BINARY_H
 #include <ankerl/unordered_dense.h>
 #include <llvm/IR/IRBuilder.h>
 
@@ -73,4 +73,4 @@ namespace fluent::compiler::rule
     }
 }
 
-#endif //FLUENTC_RULE_ADD_H
+#endif //FLUENTC_RULE_BINARY_H
