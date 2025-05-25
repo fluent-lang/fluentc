@@ -24,10 +24,10 @@
 namespace fluent::compiler::types
 {
     inline llvm::Type *convert_type(
-    llvm::LLVMContext &context,
-    const file_code::Type &type,
-    const bool panic = true
-)
+        llvm::LLVMContext &context,
+        const file_code::Type &type,
+        const bool panic = true
+    )
     {
         llvm::Type *result = nullptr;
 
