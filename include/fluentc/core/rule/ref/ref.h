@@ -40,7 +40,7 @@ namespace fluent::compiler::rule
                 case parser::StringLiteral:
                 {
                     // Create a global string
-                    const auto &str = fluent::util::try_unwrap(value->value);
+                    const auto &str = util::try_unwrap(value->value);
                     const auto global = new llvm::GlobalVariable(
                         *module,
                         llvm::ArrayType::get(llvm::Type::getInt8Ty(context), str.size() + 1), // +1 for null terminator
@@ -60,7 +60,7 @@ namespace fluent::compiler::rule
                 case parser::NumLiteral:
                 {
                     // Create a global int
-                    const auto &num = fluent::util::try_unwrap(value->value);
+                    const auto &num = util::try_unwrap(value->value);
                     const auto global = new llvm::GlobalVariable(
                         *module,
                         llvm::Type::getInt32Ty(context),
@@ -79,7 +79,7 @@ namespace fluent::compiler::rule
                 case parser::DecLiteral:
                 {
                     // Create a global int
-                    const auto &num = fluent::util::try_unwrap(value->value);
+                    const auto &num = util::try_unwrap(value->value);
                     const auto global = new llvm::GlobalVariable(
                         *module,
                         llvm::Type::getFloatTy(context),
