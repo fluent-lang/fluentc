@@ -26,6 +26,7 @@ namespace fluent::compiler::types
     inline llvm::Type *convert_type(
         llvm::LLVMContext &context,
         const file_code::Type &type,
+        stats::CompileTimeStats &ct_stats,
         const bool panic = true
     )
     {
@@ -34,7 +35,7 @@ namespace fluent::compiler::types
         // Get the type based on the type name
         if (type.base_type.has_value())
         {
-            result = llvm::StructType::getTypeByName(context, type.base_type.value().data());
+            result = ct_stats.get_mod(type.base_type.value().data());
         } else
         {
             switch (type.primitive.value())
