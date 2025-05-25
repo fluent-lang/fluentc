@@ -16,8 +16,8 @@
 // Created by rodrigo on 5/20/25.
 //
 
-#ifndef FEATURE_LINK_H
-#define FEATURE_LINK_H
+#ifndef FLUENTC_RULE_LINK_H
+#define FLUENTC_RULE_LINK_H
 
 #include <fluent/file_code/file_code.h>
 #include <llvm/Support/SourceMgr.h>
@@ -72,4 +72,4 @@ namespace fluent::compiler::rule
     }
 }
 
-#endif //FEATURE_LINK_H
+#endif //FLUENTC_RULE_LINK_H

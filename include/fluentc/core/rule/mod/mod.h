@@ -16,8 +16,8 @@
 // Created by rodrigo on 5/24/25.
 //
 
-#ifndef FEATURE_MOD_H
-#define FEATURE_MOD_H
+#ifndef FLUENTC_RULE_MOD_H
+#define FLUENTC_RULE_MOD_H
 
 #include "../../../util/triple.h"
 #include "../../types/types.h"
@@ -101,4 +101,4 @@ namespace fluent::compiler::rule
     }
 }
 
-#endif //FEATURE_MOD_H
+#endif //FLUENTC_RULE_MOD_H

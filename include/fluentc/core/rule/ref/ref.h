@@ -16,8 +16,8 @@
 // Created by rodrigo on 5/20/25.
 //
 
-#ifndef FEATURE_REF_H
-#define FEATURE_REF_H
+#ifndef FLUENTC_RULE_REF_H
+#define FLUENTC_RULE_REF_H
 
 #include <fluent/file_code/file_code.h>
 #include <fluent/atoi/library.h>
@@ -103,4 +103,4 @@ namespace fluent::compiler::rule
     }
 }
 
-#endif //FEATURE_REF_H
+#endif //FLUENTC_RULE_REF_H

@@ -16,8 +16,8 @@
 // Created by rodrigo on 5/21/25.
 //
 
-#ifndef FEATURE_RET_H
-#define FEATURE_RET_H
+#ifndef FLUENTC_RULE_RET_H
+#define FLUENTC_RULE_RET_H
 
 inline void process_ret(
     llvm::IRBuilder<> &builder,
@@ -50,4 +50,4 @@ inline void process_ret(
     builder.CreateRet(find_value(variables, refs, id_val));
 }
 
-#endif //FEATURE_RET_H
+#endif //FLUENTC_RULE_RET_H

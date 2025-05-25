@@ -16,8 +16,8 @@
 // Created by rodrigo on 5/20/25.
 //
 
-#ifndef FEATURE_FUNCTION_H
-#define FEATURE_FUNCTION_H
+#ifndef FLUENTC_RULE_FUNCTION_H
+#define FLUENTC_RULE_FUNCTION_H
 #include <llvm/IR/IRBuilder.h>
 
 #include "../../../variable/variable.h"
@@ -133,6 +133,11 @@ namespace fluent::compiler::rule
                         break;
                     }
 
+                    case parser::Mov:
+                    {
+
+                    }
+
                     default:
                     {
                         // Use the expression processor directly
@@ -152,4 +157,4 @@ namespace fluent::compiler::rule
     }
 }
 
-#endif //FEATURE_FUNCTION_H
+#endif //FLUENTC_RULE_FUNCTION_H
