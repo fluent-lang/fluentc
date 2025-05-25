@@ -79,10 +79,7 @@ namespace fluent::compiler::stats
             return refs.contains(name);
         }
 
-        void get_ref(
-            const std::string_view &name,
-            llvm::GlobalVariable *&var
-        )
+        llvm::GlobalVariable * get_ref(const std::string_view &name)
         {
             // Check if the ref exists
             if (!refs.contains(name))
@@ -91,7 +88,7 @@ namespace fluent::compiler::stats
             }
 
             // Get the ref
-            var = refs[name];
+            return refs[name];
         }
 
         ~CompileTimeStats()
