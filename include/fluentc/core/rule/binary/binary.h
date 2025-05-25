@@ -28,12 +28,13 @@
 
 namespace fluent::compiler::rule
 {
-    inline llvm::Value *process_add(
+    inline llvm::Value *process_binary_opt(
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &add,
         const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
         stats::CompileTimeStats &ct_stats,
-        const char *name
+        const char *name,
+        const parser::Rule &rule
     )
     {
         // Get the children
@@ -41,12 +42,34 @@ namespace fluent::compiler::rule
         const auto left = find_value(variables, ct_stats, children[0]->value->data());
         const auto right = find_value(variables, ct_stats, children[0]->value->data());
 
-        // Create an add
-        return builder.CreateAdd(
-            left,
-            right,
-            name
-        );
+        // Create the instruction
+        switch (rule)
+        {
+            case parser::Add:
+            {
+                return builder.CreateAdd(left, right, name);
+            }
+
+            case parser::Sub:
+            {
+                return builder.CreateSub(left, right, name);
+            }
+
+            case parser::Mul:
+            {
+                return builder.CreateMul(left, right, name);
+            }
+
+            case parser::Div:
+            {
+                return builder.CreateSDiv(left, right, name);
+            }
+
+            default:
+            {
+                throw std::runtime_error("Error: Unknown binary operator");
+            }
+        }
     }
 }
 
