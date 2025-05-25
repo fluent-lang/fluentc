@@ -49,7 +49,7 @@ namespace fluent::compiler::rule
                 return_type = llvm::Type::getInt32Ty(context);
             } else
             {
-                return_type = types::convert_type(context, fun->return_type);
+                return_type = types::convert_type(context, fun->return_type, ct_stats);
             }
 
             // Collect the arguments
@@ -57,7 +57,7 @@ namespace fluent::compiler::rule
             for (const auto &[_, arg] : fun->params)
             {
                 // Convert the arg type and push it
-                args.push_back(types::convert_type(context, arg));
+                args.push_back(types::convert_type(context, arg, ct_stats));
             }
 
             // Create the function
