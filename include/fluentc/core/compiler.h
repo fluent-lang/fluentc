@@ -29,7 +29,7 @@
 #include "../util/file_reader.h"
 
 #include "../ir/ir_compiler.h"
-#include "../state/state .h"
+#include "../state/state.h"
 #include "backend.h"
 
 namespace fluent::compiler

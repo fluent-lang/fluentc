@@ -69,7 +69,7 @@ add_executable(fluentc main.cpp
         include/fluentc/ir/ir_compiler.h
         include/fluentc/ir/ir_linker.h
         include/fluentc/ansi/ansi.h
-        "include/fluentc/state/state .h"
+        "include/fluentc/state/state.h"
         include/fluentc/util/command.h
         include/fluentc/core/rule/mod/mod.h
         include/fluentc/util/triple.h
