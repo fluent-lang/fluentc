@@ -25,7 +25,7 @@ namespace fluent::compiler::rule
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &child,
         const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
-        const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs
+        stats::CompileTimeStats &ct_stats
     )
     {
         // Get the children
@@ -45,7 +45,7 @@ namespace fluent::compiler::rule
         const auto id_val = util::try_unwrap(identifier->value);
 
         // Create a return instruction
-        builder.CreateRet(find_value(variables, refs, id_val));
+        builder.CreateRet(find_value(variables, ct_stats, id_val));
     }
 }
 #endif //FLUENTC_RULE_RET_H
