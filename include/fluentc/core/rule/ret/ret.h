@@ -39,12 +39,8 @@ namespace fluent::compiler::rule
             return;
         }
 
-        // Get the expression
-        const auto &expr = children[0];
-        util::assert_eq(expr->rule, parser::Expression);
-
         // Get the identifier
-        const auto &identifier = children[1];
+        const auto &identifier = children[0];
         util::assert_eq(identifier->rule, parser::Identifier);
         const auto id_val = util::try_unwrap(identifier->value);
 
