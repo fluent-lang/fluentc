@@ -23,13 +23,13 @@ namespace fluent::compiler::rule
 {
     inline void process_ret(
         llvm::IRBuilder<> &builder,
-        const std::shared_ptr<fluent::parser::AST> &child,
-        const ankerl::unordered_dense::map<std::string_view, fluent::compiler::variable::Variable> &variables,
+        const std::shared_ptr<parser::AST> &child,
+        const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
         const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs
     )
     {
         // Get the children
-        const auto &children = fluent::util::try_unwrap(child->children);
+        const auto &children = util::try_unwrap(child->children);
 
         // Check if the return type is void
         if (children.empty())
@@ -41,12 +41,12 @@ namespace fluent::compiler::rule
 
         // Get the expression
         const auto &expr = children[0];
-        fluent::util::assert_eq(expr->rule, fluent::parser::Expression);
+        util::assert_eq(expr->rule, parser::Expression);
 
         // Get the identifier
         const auto &identifier = children[1];
-        fluent::util::assert_eq(identifier->rule, fluent::parser::Identifier);
-        const auto id_val = fluent::util::try_unwrap(identifier->value);
+        util::assert_eq(identifier->rule, parser::Identifier);
+        const auto id_val = util::try_unwrap(identifier->value);
 
         // Create a return instruction
         builder.CreateRet(find_value(variables, refs, id_val));
