@@ -40,7 +40,7 @@ namespace fluent::compiler::rule
 
         // Get the variable name, type and expr
         const auto name = children[0];
-        const auto type = types::convert_type(context, file_code::process_type(children[1]));
+        const auto type = types::convert_type(context, file_code::process_type(children[1]), ct_stats);
         const auto expr = children[2];
         llvm::Value *value = nullptr;
         llvm::AllocaInst *alloca = nullptr;
