@@ -106,6 +106,12 @@ namespace fluent::compiler::stats
             mods[name] = mod;
         }
 
+        bool has_mod(const std::string_view &name) const
+        {
+            // Check if the mod exists
+            return mods.contains(name);
+        }
+
         llvm::StructType * get_mod(const std::string_view &name)
         {
             // Check if the mod exists
