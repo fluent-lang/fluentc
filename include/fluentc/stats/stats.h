@@ -73,7 +73,8 @@ namespace fluent::compiler::stats
             refs[name] = var;
         }
 
-        bool has_ref(const std::string_view &name) const {
+        bool has_ref(const std::string_view &name) const
+        {
             // Check if the ref exists
             return refs.contains(name);
         }
