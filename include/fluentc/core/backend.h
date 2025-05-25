@@ -49,7 +49,7 @@ namespace fluent::compiler
         rule::process_links(context, module, code);
 
         // Process all mods
-        rule::process_mods(context, code);
+        rule::process_mods(context, code, stats);
 
         // Process all functions
         rule::process_functions(context, module, builder, code, stats);

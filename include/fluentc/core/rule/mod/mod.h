@@ -28,7 +28,8 @@ namespace fluent::compiler::rule
     inline bool process_mod(
         llvm::LLVMContext &context,
         const std::shared_ptr<file_code::Mod> &mod,
-        const std::string_view &name
+        const std::string_view &name,
+        stats::CompileTimeStats &stats
     )
     {
         // Collect the module's types
@@ -48,18 +49,22 @@ namespace fluent::compiler::rule
         }
 
         // Create the module
-        llvm::StructType::create(
+        const auto type = llvm::StructType::create(
             context,
             types,
             name.data()
         );
+
+        // Insert the module
+        stats.insert_mod(name.data(), type);
 
         return true;
     }
 
     inline void process_mods(
         llvm::LLVMContext &context,
-        const file_code::FileCode *code
+        const file_code::FileCode *code,
+        stats::CompileTimeStats &stats
     )
     {
         // Since order of dependencies is not guaranteed,
@@ -70,7 +75,7 @@ namespace fluent::compiler::rule
         for (const auto &[name, mod] : code->mods)
         {
             // Try to process the module
-            if (!process_mod(context, mod, name))
+            if (!process_mod(context, mod, name, stats))
             {
                 // Enqueue the module
                 queue.emplace_back(name, mod, false);
@@ -85,7 +90,7 @@ namespace fluent::compiler::rule
             queue.pop_back();
 
             // Process the module
-            if (!process_mod(context, triple.second, triple.first))
+            if (!process_mod(context, triple.second, triple.first, stats))
             {
                 // Make sure the mod was not seen before
                 if (triple.third)
