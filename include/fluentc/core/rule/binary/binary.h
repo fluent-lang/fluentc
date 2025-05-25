@@ -65,6 +65,16 @@ namespace fluent::compiler::rule
                 return builder.CreateSDiv(left, right, name);
             }
 
+            case parser::And:
+            {
+                return builder.CreateAnd(left, right, name);
+            }
+
+            case parser::Or:
+            {
+                return builder.CreateXor(left, right, name);
+            }
+
             default:
             {
                 throw std::runtime_error("Error: Unknown binary operator");
