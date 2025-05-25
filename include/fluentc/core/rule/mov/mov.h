@@ -22,7 +22,7 @@
 #include <llvm/IR/IRBuilder.h>
 
 #include "../../../variable/variable.h"
-#include "../add/add.h"
+#include "../binary/binary.h"
 #include "fluent/parser/ast/ast.h"
 
 namespace fluent::compiler::rule
