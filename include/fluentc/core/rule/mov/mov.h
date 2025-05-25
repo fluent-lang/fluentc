@@ -26,7 +26,8 @@
 
 namespace fluent::compiler::rule
 {
-    inline void process_mov(const llvm::Module *module,
+    inline void process_mov(
+        const llvm::Module *module,
         llvm::IRBuilder<> &builder,
         llvm::LLVMContext &context,
         const std::shared_ptr<parser::AST> &child,
