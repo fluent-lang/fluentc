@@ -22,6 +22,7 @@
 #include <llvm/IR/IRBuilder.h>
 
 #include "../../../variable/variable.h"
+#include "../add/add.h"
 #include "fluent/parser/ast/ast.h"
 
 namespace fluent::compiler::rule
@@ -96,6 +97,15 @@ namespace fluent::compiler::rule
 
             case parser::Add:
             {
+                // Initialize the alloca value
+                alloca = builder.CreateAlloca(type, nullptr, name->value->data());
+
+                process_add(
+                    builder,
+                    child,
+                    variables,
+                    ct_stats
+                );
                 break;
             }
 
