@@ -56,6 +56,12 @@ namespace fluent::compiler::rule
             name
         );
 
+        // Skip if the expression wasn't parsed
+        if (value == nullptr && alloc_inst == nullptr)
+        {
+            return;
+        }
+
         // Insert to the variables
         variables[name] = { .type = type, .alloca = alloc_inst, .value = value };
     }
