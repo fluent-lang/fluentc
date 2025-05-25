@@ -72,7 +72,7 @@ namespace fluent::compiler::rule
 
             case parser::Or:
             {
-                return builder.CreateXor(left, right, name);
+                return builder.CreateOr(left, right, name);
             }
 
             default:
