@@ -34,7 +34,7 @@ namespace fluent::compiler::rule
         llvm::IRBuilder<> &builder,
         const file_code::FileCode *code,
         const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
-        stats::CompileTimeStats &stats
+        stats::CompileTimeStats &ct_stats
     ) {
         // Since order of dependencies is not guaranteed, we have
         // to define all the functions' signatures beforehand
@@ -138,19 +138,25 @@ namespace fluent::compiler::rule
 
                     }
 
-                    default:
+                    case parser::Call:
                     {
-                        // Use the expression processor directly
-                        process_expr(
-                            context,
+                        process_call(
                             module,
+                            context,
                             builder,
                             child,
                             variables,
                             refs,
-                            stats
+                            ct_stats,
+                            false,
+                            nullptr
                         );
+
+                        break;
                     }
+
+                    default:
+                    {}
                 }
             }
         }

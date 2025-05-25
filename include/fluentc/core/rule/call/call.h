@@ -34,7 +34,7 @@ namespace fluent::compiler::rule
         const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
         stats::CompileTimeStats &ct_stats,
         const bool is_construct,
-        const bool is_declaration
+        llvm::AllocaInst *struct_ptr
     )
     {
         // Get the children
@@ -62,7 +62,10 @@ namespace fluent::compiler::rule
             llvm::Type *struct_ty = llvm::StructType::getTypeByName(context, name->value->data());
 
             // Create a new alloca instruction for the struct
-            llvm::AllocaInst *struct_ptr = builder.CreateAlloca(struct_ty, nullptr, ct_stats.request_addr());
+            if (struct_ptr == nullptr)
+            {
+                struct_ptr = builder.CreateAlloca(struct_ty, nullptr, ct_stats.request_addr());
+            }
 
             // Add all fields
             for (size_t i = 1; i < children.size(); i++)
