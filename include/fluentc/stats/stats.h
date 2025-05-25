@@ -47,7 +47,7 @@ namespace fluent::compiler::stats
 
             // Convert the requested_vars to a string
             char *requested_vars_str = itoa(requested_vars);
-            memcpy(var, requested_vars_str, requested_vars + 1); // +1 for null terminator
+            memcpy(var + 10, requested_vars_str, requested_vars + 1); // +1 for null terminator
             free(requested_vars_str);
 
             // Store the variable
