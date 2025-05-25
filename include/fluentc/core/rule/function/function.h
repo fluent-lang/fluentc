@@ -147,40 +147,19 @@ namespace fluent::compiler::rule
                         break;
                     }
 
-                    case parser::Call:
-                    {
-                        process_call(
-                            module,
-                            context,
-                            builder,
-                            child,
-                            variables,
-                            ct_stats,
-                            false,
-                            nullptr
-                        );
-
-                        break;
-                    }
-
-                    case parser::Construct:
-                    {
-                        process_call(
-                            module,
-                            context,
-                            builder,
-                            child,
-                            variables,
-                            ct_stats,
-                            true,
-                            nullptr
-                        );
-
-                        break;
-                    }
-
                     default:
-                    {}
+                    {
+                        process_expr(
+                            module,
+                            builder,
+                            context,
+                            child,
+                            variables,
+                            ct_stats,
+                            nullptr,
+                            nullptr
+                        );
+                    }
                 }
             }
         }
