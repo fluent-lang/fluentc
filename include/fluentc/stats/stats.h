@@ -30,6 +30,7 @@ namespace fluent::compiler::stats
     {
         long requested_vars = 0;
         std::vector<char *> allocated_vars;
+        ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> refs;
 
     public:
         CompileTimeStats() = default;
@@ -55,6 +56,36 @@ namespace fluent::compiler::stats
             ++requested_vars;
 
             return var;
+        }
+
+        void insert_ref(
+            const std::string_view &name,
+            llvm::GlobalVariable *var
+        )
+        {
+            // Check if the ref already exists
+            if (refs.contains(name))
+            {
+                throw std::runtime_error("Error: Ref already exists");
+            }
+
+            // Insert the ref
+            refs[name] = var;
+        }
+
+        void get_ref(
+            const std::string_view &name,
+            llvm::GlobalVariable *&var
+        )
+        {
+            // Check if the ref exists
+            if (!refs.contains(name))
+            {
+                throw std::runtime_error("Error: Ref not found");
+            }
+
+            // Get the ref
+            var = refs[name];
         }
 
         ~CompileTimeStats()
