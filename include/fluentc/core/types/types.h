@@ -35,6 +35,11 @@ namespace fluent::compiler::types
         // Get the type based on the type name
         if (type.base_type.has_value())
         {
+            if (!ct_stats.has_mod(type.base_type.value().data()) && !panic)
+            {
+                return nullptr;
+            }
+
             result = ct_stats.get_mod(type.base_type.value().data());
         } else
         {
