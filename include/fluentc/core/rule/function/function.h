@@ -135,7 +135,7 @@ namespace fluent::compiler::rule
 
                     case parser::Mov:
                     {
-
+                        break;
                     }
 
                     case parser::Call:
