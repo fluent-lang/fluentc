@@ -99,6 +99,8 @@ namespace fluent::compiler::rule
             case parser::Mul:
             case parser::Div:
             case parser::Add:
+            case parser::Or:
+            case parser::And:
             {
                 value = process_binary_opt(
                     builder,
