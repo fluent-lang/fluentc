@@ -28,22 +28,23 @@
 
 namespace fluent::compiler::rule
 {
-    inline void process_add(
+    inline llvm::Value *process_add(
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &add,
         const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
-        stats::CompileTimeStats &ct_stats
+        stats::CompileTimeStats &ct_stats,
+        const char *name
     )
     {
         // Get the children
         const auto &children = util::try_unwrap(add->children);
 
-        // Get the identifier
-        const auto &id = children[0];
-
-        // Get the variable
-        const auto id_val = util::try_unwrap(id->value);
-        builder.CreateAdd(find_value(variables, ct_stats, id_val), find_value(variables, ct_stats, id_val));
+        // Create an add
+        return builder.CreateAdd(
+            find_value(variables, ct_stats, children[0]->value->data()),
+            find_value(variables, ct_stats, children[0]->value->data()),
+            name
+        );
     }
 }
 
