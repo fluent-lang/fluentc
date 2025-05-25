@@ -30,7 +30,6 @@ namespace fluent::compiler::rule
         llvm::LLVMContext &context,
         const llvm::Module *module,
         llvm::IRBuilder<> &builder,
-        const file_code::FileCode *code,
         const std::shared_ptr<parser::AST> &expr,
         const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
         const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,

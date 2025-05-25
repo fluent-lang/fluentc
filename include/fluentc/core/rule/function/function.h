@@ -140,7 +140,6 @@ namespace fluent::compiler::rule
                             context,
                             module,
                             builder,
-                            code,
                             child,
                             variables,
                             refs,
