@@ -45,12 +45,6 @@ namespace fluent::compiler::rule
         llvm::Value *value = nullptr;
         llvm::AllocaInst *alloca = nullptr;
 
-        // Create alloca instructions for non-primitive types
-        if (type->isStructTy())
-        {
-            alloca = builder.CreateAlloca(type, nullptr, name->value->data());
-        }
-
         // Convert the expression to an LLVM object
         switch (expr->rule)
         {
@@ -83,6 +77,9 @@ namespace fluent::compiler::rule
 
             case parser::Construct:
             {
+                // Initialize the alloca value
+                alloca = builder.CreateAlloca(type, nullptr, name->value->data());
+
                 value = process_call(
                     module,
                     context,
