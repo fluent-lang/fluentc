@@ -44,7 +44,13 @@ namespace fluent::compiler::variable
         // Check if the variable exists
         if (variables.contains(name))
         {
-            return variables.at(name).value;
+            const auto var = variables.at(name);
+            if (var.alloca != nullptr)
+            {
+                return var.alloca;
+            }
+            
+            return var.value;
         }
 
         // If not found, throw an error
