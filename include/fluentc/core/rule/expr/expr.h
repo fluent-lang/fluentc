@@ -28,6 +28,7 @@
 #include "../binary/binary.h"
 #include "../call/call.h"
 #include "../eq/eq.h"
+#include "../ne/ne.h"
 #include "../prop/prop.h"
 #include "../take/take.h"
 #include "fluent/parser/ast/ast.h"
@@ -184,6 +185,22 @@ namespace fluent::compiler::rule
                 return
                 {
                     process_eq(
+                        context,
+                        builder,
+                        expr,
+                        variables,
+                        ct_stats,
+                        expr_name
+                    ),
+                    nullptr
+                };
+            }
+
+            case parser::Ne:
+            {
+                return
+                {
+                    process_ne(
                         context,
                         builder,
                         expr,
