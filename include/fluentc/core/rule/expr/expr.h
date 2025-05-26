@@ -94,7 +94,7 @@ namespace fluent::compiler::rule
 
                 return
                 {
-                    nullptr,
+                    alloca_inst,
                     alloca_inst
                 };
             }
