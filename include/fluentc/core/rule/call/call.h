@@ -71,10 +71,9 @@ namespace fluent::compiler::rule
             {
                 // Get the identifier
                 const auto id = children[i];
-                util::assert_eq(variables.contains(id->value.value()), true);
 
                 // Get the variable
-                const auto var = variables.at(id->value.value());
+                const auto var = get_variable(variables, util::try_unwrap(id->value));
 
                 // Get the filed
                 llvm::Value *field = builder.CreateStructGEP(struct_ty, struct_ptr, i - 1, ct_stats.request_addr());
