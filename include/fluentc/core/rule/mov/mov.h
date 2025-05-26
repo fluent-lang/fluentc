@@ -45,7 +45,8 @@ namespace fluent::compiler::rule
         // Avoid using ->data() directly to avoid creating a new string_view
         // that will call strlen again
         const auto name = util::try_unwrap(children[0]->value);
-        const auto type = types::convert_type(context, file_code::process_type(children[1]), ct_stats);
+        const auto original_type = file_code::process_type(children[1]);
+        const auto type = types::convert_type(context, original_type , ct_stats);
         const auto expr = children[2];
         const auto [ value, alloc_inst ] = process_expr(
             module,
@@ -65,7 +66,7 @@ namespace fluent::compiler::rule
         }
 
         // Insert to the variables
-        variables[name] = { .type = type, .alloca = alloc_inst, .value = value };
+        variables[name] = { .type = type, .alloca = alloc_inst, .value = value, .original_type = original_type };
     }
 }
 
