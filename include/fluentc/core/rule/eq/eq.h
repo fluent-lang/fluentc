@@ -46,12 +46,8 @@ namespace fluent::compiler::rule
         const auto left = find_value(context, variables, ct_stats, children[0]);
         const auto right = find_value(context, variables, ct_stats, children[1]);
 
-        // Get the left variable to check if we are comparing floats or structs
-        const auto left_var = variables.at(util::try_unwrap(children[0]->value));
-        const file_code::Type original_type = left_var->original_type;
-
         // Check if we are comparing structs
-        if (original_type.base_type.has_value())
+        if (left->getType()->isStructTy())
         {
             // Structs are non-comparable, put false directly
             const auto false_value = llvm::ConstantInt::get(
@@ -68,7 +64,7 @@ namespace fluent::compiler::rule
         }
 
         // Check for float comparison
-        if (original_type.primitive.value() == file_code::Dec)
+        if (left->getType()->isFloatingPointTy() || right->getType()->isFloatingPointTy())
         {
             // Use CreateFCmpOEQ instead
             return builder.CreateFCmpOEQ(
