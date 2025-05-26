@@ -109,8 +109,25 @@ namespace fluent::compiler::rule
                 fn_args++;
             }
 
-            // Insert __block_end__
-            blocks["__block_end__"] = llvm::BasicBlock::Create(context, "__block_end__", func);
+            // Insert __block_end__ only if the return type is void
+            if (is_main || fun->return_type.primitive.has_value() && fun->return_type.primitive.value() == file_code::Nothing)
+            {
+                const auto new_block = llvm::BasicBlock::Create(context, "__block_end__", func);
+                blocks["__block_end__"] = new_block;
+
+                // Add a return 0 for main
+                if (is_main)
+                {
+                    llvm::Value *ret_val = llvm::ConstantInt::get(llvm::Type::getInt32Ty(context), 0);
+                    builder.SetInsertPoint(new_block);
+                    builder.CreateRet(ret_val);
+                } else
+                {
+                    // Create a return instruction for non-main functions
+                    builder.SetInsertPoint(new_block);
+                    builder.CreateRetVoid();
+                }
+            }
 
             // Insert all blocks (Insertion happens after the main block is written)
             for (const auto &[name, block] : fun->blocks)
