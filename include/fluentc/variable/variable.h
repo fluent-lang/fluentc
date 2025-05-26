@@ -30,8 +30,8 @@ namespace fluent::compiler::variable
         file_code::Type original_type;
     } Variable;
 
-    inline Variable get_variable(
-        const ankerl::unordered_dense::map<std::string_view, Variable> &variables,
+    inline std::shared_ptr<Variable> get_variable(
+        const ankerl::unordered_dense::map<std::string_view, std::shared_ptr<Variable>> &variables,
         const std::string_view &name
     )
     {
@@ -46,7 +46,7 @@ namespace fluent::compiler::variable
     }
 
     inline llvm::Value *find_value(
-        const ankerl::unordered_dense::map<std::string_view, Variable> &variables,
+        const ankerl::unordered_dense::map<std::string_view, std::shared_ptr<Variable>> &variables,
         stats::CompileTimeStats &ct_stats,
         const std::string_view &name
     )
@@ -58,13 +58,13 @@ namespace fluent::compiler::variable
         }
 
         // Get the variable
-        const Variable var = get_variable(variables, name);
-        if (var.alloca != nullptr)
+        const auto var = get_variable(variables, name);
+        if (var->alloca != nullptr)
         {
-            return var.alloca;
+            return var->alloca;
         }
 
-        return var.value;
+        return var->value;
     }
 }
 
