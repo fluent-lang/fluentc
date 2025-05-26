@@ -105,6 +105,9 @@ namespace fluent::compiler::rule
         const file_code::FileCode *code,
         stats::CompileTimeStats &ct_stats
     ) {
+        // Used to avoid computing strcmp for every function
+        bool has_found_main = false;
+
         // Since order of dependencies is not guaranteed, we have
         // to define all the functions' signatures beforehand
         ankerl::unordered_dense::map<std::string_view, std::pair<bool, llvm::Function *>> function_signatures;
@@ -112,10 +115,11 @@ namespace fluent::compiler::rule
         {
             // Convert the return type to a LLVM type
             llvm::Type *return_type;
-            const bool is_main = strcmp(name.data(), "main") == 0;
+            const bool is_main = !has_found_main && strcmp(name.data(), "main") == 0;
             if (is_main)
             {
                 return_type = llvm::Type::getInt32Ty(context);
+                has_found_main = true;
             } else
             {
                 return_type = types::convert_type(context, fun->return_type, ct_stats);
