@@ -51,6 +51,9 @@ namespace fluent::compiler::types
                 case file_code::Num:
                     result = llvm::Type::getInt32Ty(context);
                 break;
+                case file_code::Bool:
+                    result = llvm::Type::getInt1Ty(context);
+                break;
                 case file_code::Dec:
                     result = llvm::Type::getDoubleTy(context);
                 break;
