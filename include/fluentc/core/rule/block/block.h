@@ -20,6 +20,7 @@
 #define FLUENTC_RULE_BLOCK_H
 
 #include "../../../variable/variable.h"
+#include "../alloca/alloca.h"
 #include "../if/if.h"
 #include "../jump/jump.h"
 #include "../mov/mov.h"
@@ -74,6 +75,19 @@ namespace fluent::compiler::rule
                         module,
                         builder,
                         context,
+                        child,
+                        variables,
+                        ct_stats
+                    );
+
+                    break;
+                }
+
+                case parser::Alloca:
+                {
+                    process_alloca(
+                        context,
+                        builder,
                         child,
                         variables,
                         ct_stats
