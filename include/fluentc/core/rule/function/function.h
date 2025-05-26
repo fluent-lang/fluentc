@@ -85,7 +85,7 @@ namespace fluent::compiler::rule
             emit(state::Building, name.data());
 
             // Create a variable and block map
-            ankerl::unordered_dense::map<std::string_view, variable::Variable> variables;
+            ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> variables;
             ankerl::unordered_dense::map<std::string_view, llvm::BasicBlock *> blocks;
             const auto [is_main, func] = function_signatures[name];
 
@@ -98,11 +98,12 @@ namespace fluent::compiler::rule
                 llvm::Value *param = func->getArg(0);
 
                 // Insert to the variables
-                variables[name] = variable::Variable{
-                    .type = param->getType(),
-                    .value = param,
-                    .original_type = type
-                };
+                const auto new_var = std::make_shared<variable::Variable>();
+                new_var->type = types::convert_type(context, type, ct_stats);
+                new_var->value = param;
+                new_var->original_type = type;
+
+                variables[name] = new_var;
 
                 i++;
                 fn_args++;
