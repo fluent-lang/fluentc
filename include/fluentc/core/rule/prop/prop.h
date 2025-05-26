@@ -62,7 +62,7 @@ namespace fluent::compiler::rule
         }
 
         // Get the variable
-        const auto &[type, alloca, value] = variables.at(id);
+        const auto &[type, alloca, value, _] = variables.at(id);
         const auto var_value = alloca ? alloca : value;
 
         // Get the filed
