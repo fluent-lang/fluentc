@@ -24,7 +24,7 @@ namespace fluent::compiler::rule
     inline void process_ret(
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &child,
-        const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
+        const ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
         stats::CompileTimeStats &ct_stats
     )
     {
