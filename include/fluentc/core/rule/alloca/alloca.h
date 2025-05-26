@@ -41,7 +41,9 @@ namespace fluent::compiler::rule
         const auto &children = util::try_unwrap(ast->children);
 
         // Get the name
-        const auto &name = children[0]->value->data();
+        // Avoid using ->data() directly to avoid creating a new string_view
+        // that will call strlen again
+        const auto &name = util::try_unwrap(children[0]->value);
 
         // Get the type
         llvm::Type *type = types::convert_type(
@@ -54,7 +56,7 @@ namespace fluent::compiler::rule
         llvm::AllocaInst *alloca_inst = builder.CreateAlloca(
             type,
             nullptr,
-            name
+            name.data()
         );
 
         // Save the variable
