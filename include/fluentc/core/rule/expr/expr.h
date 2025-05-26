@@ -184,6 +184,7 @@ namespace fluent::compiler::rule
                 return
                 {
                     process_eq(
+                        context,
                         builder,
                         expr,
                         variables,

@@ -18,6 +18,7 @@ The Fluent Programming Language
 
 #ifndef FLUENTC_VARIABLE_H
 #define FLUENTC_VARIABLE_H
+#include <fluent/atoi/library.h>
 #include <llvm/IR/Instructions.h>
 
 namespace fluent::compiler::variable
@@ -65,6 +66,30 @@ namespace fluent::compiler::variable
         }
 
         return var->value;
+    }
+
+    inline llvm::Value *find_value(
+        llvm::LLVMContext &context,
+        const ankerl::unordered_dense::map<std::string_view, std::shared_ptr<Variable>> &variables,
+        stats::CompileTimeStats &ct_stats,
+        const std::shared_ptr<parser::AST> &ast
+    )
+    {
+        // Get the child's value
+        const auto &value = util::try_unwrap(ast->value);
+
+        // Check if we have a number literal
+        if (ast->rule == parser::NumLiteral)
+        {
+            // Create a constant integer value
+            return llvm::ConstantInt::get(
+                llvm::Type::getInt32Ty(context),
+                atoi_convert(value.data())
+            );
+        }
+
+        // Use the default if we don't have a value
+        return find_value(variables, ct_stats, value);
     }
 }
 

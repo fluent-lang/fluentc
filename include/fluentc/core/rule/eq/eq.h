@@ -31,6 +31,7 @@
 namespace fluent::compiler::rule
 {
     inline llvm::Value *process_eq(
+        llvm::LLVMContext &context,
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &eq,
         const ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
@@ -42,8 +43,8 @@ namespace fluent::compiler::rule
         const auto &children = util::try_unwrap(eq->children);
 
         // Get the left and right values
-        const auto left = find_value(variables, ct_stats, children[0]->value->data());
-        const auto right = find_value(variables, ct_stats, children[1]->value->data());
+        const auto left = find_value(context, variables, ct_stats, children[0]);
+        const auto right = find_value(context, variables, ct_stats, children[1]);
 
         // Get the left variable to check if we are comparing floats or structs
         const auto left_var = variables.at(util::try_unwrap(children[0]->value));
