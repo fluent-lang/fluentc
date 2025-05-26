@@ -19,6 +19,7 @@
 #ifndef FLUENTC_RULE_BINARY_H
 #define FLUENTC_RULE_BINARY_H
 #include <ankerl/unordered_dense.h>
+#include <fluent/atoi/library.h>
 #include <llvm/IR/IRBuilder.h>
 
 #include "../../../stats/stats.h"
@@ -40,7 +41,35 @@ namespace fluent::compiler::rule
         // Get the children
         const auto &children = util::try_unwrap(add->children);
         const auto left = find_value(variables, ct_stats, children[0]->value->data());
-        const auto right = find_value(variables, ct_stats, children[1]->value->data());
+        const auto right_child = children[1];
+
+        llvm::Value *right;
+        // Initialize the value
+        switch (right_child->rule)
+        {
+            case parser::Identifier:
+            {
+                // Get the identifier value
+                const auto id_val = util::try_unwrap(right_child->value);
+                right = find_value(variables, ct_stats, id_val);
+                break;
+            }
+
+            case parser::NumLiteral:
+            {
+                // Get the value
+                right = llvm::ConstantInt::get(
+                    left->getType(),
+                    atoi_convert(right_child->value->data())
+                );
+                break;
+            }
+
+            default:
+            {
+                throw std::runtime_error("Error: Unknown binary operator right child");
+            }
+        }
 
         // Create the instruction
         switch (rule)
