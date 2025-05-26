@@ -34,16 +34,16 @@ namespace fluent::compiler::rule
         const llvm::Module *module,
         llvm::IRBuilder<> &builder,
         stats::CompileTimeStats &ct_stats,
-        const std::shared_ptr<file_code::Function> &fun,
         const bool is_main,
         ankerl::unordered_dense::map<std::string_view, variable::Variable> variables,
-        const ankerl::unordered_dense::map<std::string_view, llvm::BasicBlock *> &blocks
+        const ankerl::unordered_dense::map<std::string_view, llvm::BasicBlock *> &blocks,
+        const std::vector<std::shared_ptr<parser::AST>> &children
     )
     {
         builder.SetInsertPoint(block);
 
         // Iterate over the function's body
-        for (const auto &child : util::try_unwrap(fun->body->children))
+        for (const auto &child : children)
         {
             switch (child->rule)
             {

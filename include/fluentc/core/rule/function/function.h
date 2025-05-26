@@ -123,26 +123,29 @@ namespace fluent::compiler::rule
                 module,
                 builder,
                 ct_stats,
-                fun,
                 is_main,
                 variables,
-                blocks
+                blocks,
+                util::try_unwrap(fun->body->children)
             );
 
             // Process additional blocks
-            for (const auto &[name, block] : blocks)
+            for (const auto &[name, block] : fun->blocks)
             {
+                // Get the basic block from the map
+                const auto basic_block = blocks.at(name);
+
                 // Entry block never present here, no need for name checking
                 process_block(
-                    block,
+                    basic_block,
                     context,
                     module,
                     builder,
                     ct_stats,
-                    fun,
                     is_main,
                     variables,
-                    blocks
+                    blocks,
+                    util::try_unwrap(block->children)
                 );
             }
         }
