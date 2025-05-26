@@ -199,6 +199,26 @@ namespace fluent::compiler::rule
                 variables,
                 blocks
             );
+
+            // Process additional blocks
+            for (const auto &[name, block] : blocks)
+            {
+                // If the block is not the main block, set the insert point
+                if (name != "entry")
+                {
+                    process_block(
+                        block,
+                        context,
+                        module,
+                        builder,
+                        ct_stats,
+                        fun,
+                        is_main,
+                        variables,
+                        blocks
+                    );
+                }
+            }
         }
     }
 }
