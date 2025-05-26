@@ -27,6 +27,7 @@ namespace fluent::compiler::variable
         llvm::Type *type = nullptr;
         llvm::AllocaInst *alloca = nullptr;
         llvm::Value *value = nullptr;
+        file_code::Type original_type;
     } Variable;
 
     inline llvm::Value *find_value(
@@ -49,7 +50,7 @@ namespace fluent::compiler::variable
             {
                 return var.alloca;
             }
-            
+
             return var.value;
         }
 

@@ -92,7 +92,7 @@ namespace fluent::compiler::rule
             // Push all params to the variable map
             auto fn_args = func->arg_begin();
             size_t i = 0;
-            for (const auto &[name, _] : fun->params)
+            for (const auto &[name, type] : fun->params)
             {
                 // Convert the arg type and push it
                 llvm::Value *param = func->getArg(0);
@@ -101,6 +101,7 @@ namespace fluent::compiler::rule
                 variables[name] = variable::Variable{
                     .type = param->getType(),
                     .value = param,
+                    .original_type = type
                 };
 
                 i++;

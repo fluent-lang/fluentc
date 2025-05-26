@@ -44,11 +44,12 @@ namespace fluent::compiler::rule
         // Avoid using ->data() directly to avoid creating a new string_view
         // that will call strlen again
         const auto &name = util::try_unwrap(children[0]->value);
+        const auto original_type = file_code::process_type(children[1]);
 
         // Get the type
         llvm::Type *type = types::convert_type(
             context,
-            file_code::process_type(children[1]),
+            original_type,
             ct_stats
         );
 
@@ -64,6 +65,7 @@ namespace fluent::compiler::rule
         var.type = type;
         var.alloca = alloca_inst;
         var.value = alloca_inst;
+        var.original_type = original_type;
         variables[name] = var;
     }
 }
