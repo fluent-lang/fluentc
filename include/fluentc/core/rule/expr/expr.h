@@ -49,6 +49,23 @@ namespace fluent::compiler::rule
     {
         switch (expr->rule)
         {
+            case parser::Identifier:
+            {
+                // Get the identifier value
+                const auto id_val = util::try_unwrap(expr->value);
+                // Find the variable in the map
+                const auto var = get_variable(variables, id_val);
+
+                // If we have an alloca instruction, return it
+                if (var->alloca != nullptr)
+                {
+                    return { var->alloca, var->alloca };
+                }
+
+                // Otherwise, return the value
+                return { var->value, nullptr };
+            }
+
             case parser::NumLiteral:
             {
                 // Get the value
