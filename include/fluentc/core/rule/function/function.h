@@ -132,8 +132,7 @@ namespace fluent::compiler::rule
             // Process additional blocks
             for (const auto &[name, block] : blocks)
             {
-                // Entry block never present here, no need for
-                // name checking
+                // Entry block never present here, no need for name checking
                 process_block(
                     block,
                     context,
