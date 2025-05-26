@@ -19,7 +19,7 @@
 #ifndef FLUENTC_RULE_PROP_H
 #define FLUENTC_RULE_PROP_H
 #include <ankerl/unordered_dense.h>
-#include <fluent/atoi/library.h>
+#include <fluent/atoi/atoi.h>
 #include <llvm/IR/IRBuilder.h>
 
 #include "../../../stats/stats.h"

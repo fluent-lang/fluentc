@@ -22,7 +22,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <vector>
-#include <fluent/itoa/library.h>
+#include <fluent/itoa/itoa.h>
 
 namespace fluent::compiler::stats
 {

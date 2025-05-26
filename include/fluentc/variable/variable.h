@@ -18,7 +18,7 @@ The Fluent Programming Language
 
 #ifndef FLUENTC_VARIABLE_H
 #define FLUENTC_VARIABLE_H
-#include <fluent/atoi/library.h>
+#include <fluent/atoi/atoi.h>
 #include <llvm/IR/Instructions.h>
 
 namespace fluent::compiler::variable

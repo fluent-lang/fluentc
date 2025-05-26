@@ -108,6 +108,7 @@ target_link_libraries(fluentc PRIVATE fluent_parser)
 target_link_libraries(fluentc PRIVATE cli)
 target_link_libraries(fluentc PRIVATE fluent_libc)
 target_link_libraries(fluentc PRIVATE cpp-subprocess::subprocess)
+add_definitions(-DDEBUG -DFLUENT_LIBC_RELEASE=1)
 
 # Add aggressive optimization flags for C++ and C compilers
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -funroll-loops -flto")

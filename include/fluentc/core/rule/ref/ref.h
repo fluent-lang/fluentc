@@ -20,7 +20,7 @@
 #define FLUENTC_RULE_REF_H
 
 #include <fluent/file_code/file_code.h>
-#include <fluent/atoi/library.h>
+#include <fluent/atoi/atoi.h>
 
 namespace fluent::compiler::rule
 {
