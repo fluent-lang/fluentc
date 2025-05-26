@@ -1,0 +1,57 @@
+/*
+    The Fluent Programming Language
+    -----------------------------------------------------
+    This code is released under the GNU GPL v3 license.
+    For more information, please visit:
+    https://www.gnu.org/licenses/gpl-3.0.html
+    -----------------------------------------------------
+    Copyright (c) 2025 Rodrigo R. & All Fluent Contributors
+    This program comes with ABSOLUTELY NO WARRANTY.
+    For details type `fluent l`. This is free software,
+    and you are welcome to redistribute it under certain
+    conditions; type `fluent l -f` for details.
+*/
+
+//
+// Created by rodrigo on 5/25/25.
+//
+
+#ifndef FLUENTC_RULE_JUMP_H
+#define FLUENTC_RULE_JUMP_H
+#include <ankerl/unordered_dense.h>
+#include <llvm/IR/IRBuilder.h>
+
+#include "fluent/parser/ast/ast.h"
+#include "fluent/util/unwrap.h"
+
+namespace fluent::compiler::jump
+{
+    inline void process_jump(
+        llvm::IRBuilder<> &builder,
+        const std::shared_ptr<parser::AST> &ast,
+        const ankerl::unordered_dense::map<std::string_view, llvm::BasicBlock *> &blocks
+    )
+    {
+        // Get the children
+        const auto &children = util::try_unwrap(ast->children);
+
+        // Get the identifier and make sure it exists
+        if (
+            const auto &id = children[0]->value->data();
+            blocks.contains(id)
+        )
+        {
+            // Get the block
+            const auto block_to_jump = blocks.at(id);
+
+            // Create the branch instruction
+            builder.CreateBr(block_to_jump);
+        }
+        else
+        {
+            throw std::runtime_error("Error: Jump to non-existing block");
+        }
+    }
+}
+
+#endif //FLUENTC_RULE_JUMP_H
