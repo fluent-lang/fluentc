@@ -23,7 +23,7 @@
 
 namespace fluent::compiler::rule
 {
-    inline void process_store(
+    inline llvm::Value *process_store(
         const llvm::Module *module,
         llvm::IRBuilder<> &builder,
         llvm::LLVMContext &context,
@@ -62,8 +62,12 @@ namespace fluent::compiler::rule
             var->alloca
         );
 
-        // Update the value of the variable
-        var->value = value;
+        // Create a store instruction
+        return builder.CreateStore(
+            value,
+            var->alloca,
+            name.data()
+        );
     }
 }
 
