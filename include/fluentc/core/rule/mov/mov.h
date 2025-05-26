@@ -42,7 +42,9 @@ namespace fluent::compiler::rule
         const auto &children = util::try_unwrap(child->children);
 
         // Get the variable name, type and expr
-        const auto name = children[0]->value->data();
+        // Avoid using ->data() directly to avoid creating a new string_view
+        // that will call strlen again
+        const auto name = util::try_unwrap(children[0]->value);
         const auto type = types::convert_type(context, file_code::process_type(children[1]), ct_stats);
         const auto expr = children[2];
         const auto [ value, alloc_inst ] = process_expr(
@@ -53,7 +55,7 @@ namespace fluent::compiler::rule
             variables,
             ct_stats,
             type,
-            name
+            name.data()
         );
 
         // Skip if the expression wasn't parsed
