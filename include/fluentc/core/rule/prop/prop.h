@@ -54,15 +54,8 @@ namespace fluent::compiler::rule
 
         // Use fluent_libc to convert the counter to an integer
         const auto i = atoi_convert(counter->value->data());
-
-        // Make sure the variable exists
-        if (!variables.contains(id))
-        {
-            throw std::runtime_error("Error: Variable not found (" + std::string(id) + ")");
-        }
-
         // Get the variable
-        const auto &[type, alloca, value, _] = variables.at(id);
+        const auto &[type, alloca, value, _] = get_variable(variables, id);
         const auto var_value = alloca ? alloca : value;
 
         // Get the filed
