@@ -32,7 +32,7 @@ namespace fluent::compiler::rule
     inline llvm::Value *process_take(
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &take,
-        const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
+        const ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
         stats::CompileTimeStats &ct_stats
     )
     {
@@ -46,10 +46,10 @@ namespace fluent::compiler::rule
 
         // Get the value
         const auto var = get_variable(variables, id_val);
-        const auto value = var.value ? var.value : var.alloca;
+        const auto value = var->value ? var->value : var->alloca;
 
         // Clone the original type
-        const auto [pointers, arrays, base_type, primitive] = var.original_type;
+        const auto [pointers, arrays, base_type, primitive] = var->original_type;
         const auto cloned_type = file_code::Type{
             .pointers = std::max(pointers, static_cast<size_t>(1)) - 1, // Decrease pointers by 1 for take
             .arrays = arrays,
