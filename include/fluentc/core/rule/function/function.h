@@ -107,6 +107,9 @@ namespace fluent::compiler::rule
                 fn_args++;
             }
 
+            // Insert __block_end__
+            blocks["__block_end__"] = llvm::BasicBlock::Create(context, "__block_end__", func);
+
             // Insert all blocks (Insertion happens after the main block is written)
             for (const auto &[name, block] : fun->blocks)
             {
