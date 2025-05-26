@@ -48,8 +48,21 @@ namespace fluent::compiler::rule
     {
         switch (expr->rule)
         {
+            case parser::NumLiteral:
+            {
+                // Get the value
+                return
+                {
+                    llvm::ConstantInt::get(
+                        type,
+                        atoi_convert(expr->value->data())
+                    ),
+                    nullptr
+                };
+            }
+
             case parser::DecLiteral:
-            case parser::NumLiteral: {
+            {
                 // Get the value
                 return
                 {
