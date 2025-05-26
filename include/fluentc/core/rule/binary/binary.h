@@ -31,7 +31,7 @@ namespace fluent::compiler::rule
     inline llvm::Value *process_binary_opt(
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &add,
-        const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
+        const ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
         stats::CompileTimeStats &ct_stats,
         const char *name,
         const parser::Rule &rule
