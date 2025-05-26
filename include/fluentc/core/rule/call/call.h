@@ -30,7 +30,7 @@ namespace fluent::compiler::rule
         llvm::LLVMContext &context,
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &call,
-        const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
+        const ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
         stats::CompileTimeStats &ct_stats,
         const bool is_construct,
         llvm::AllocaInst *struct_ptr
@@ -79,7 +79,7 @@ namespace fluent::compiler::rule
                 llvm::Value *field = builder.CreateStructGEP(struct_ty, struct_ptr, i - 1, ct_stats.request_addr());
 
                 // Store the information
-                builder.CreateStore(var.value, field);
+                builder.CreateStore(var->value, field);
             }
 
             return struct_ptr;
