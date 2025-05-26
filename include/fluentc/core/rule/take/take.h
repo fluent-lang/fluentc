@@ -44,11 +44,30 @@ namespace fluent::compiler::rule
         util::assert_eq(id->rule, parser::Identifier);
         const auto id_val = util::try_unwrap(id->value);
 
+        // Make sure the variable exists
+        if (!variables.contains(id_val))
+        {
+            throw std::runtime_error("Error: Variable not found (" + std::string(id_val.data()) + ")");
+        }
+
         // Get the value
-        const auto value = find_value(variables, ct_stats, id_val);
+        const auto var = variables.at(id_val);
+        const auto value = var.value ? var.value : var.alloca;
+
+        // Clone the original type
+        const auto [pointers, arrays, base_type, primitive] = var.original_type;
+        const auto cloned_type = file_code::Type{
+            .pointers = std::max(pointers, static_cast<size_t>(1)) - 1, // Decrease pointers by 1 for take
+            .arrays = arrays,
+            .base_type = base_type,
+            .primitive = primitive
+        };
+
+        // Convert the type to LLVM
+        const auto type = types::convert_type(builder.getContext(), cloned_type, ct_stats);
 
         // Create a load instruction
-        return builder.CreateLoad(value->getType(), value, id_val.data());
+        return builder.CreateLoad(type, value, id_val.data());
     }
 }
 
