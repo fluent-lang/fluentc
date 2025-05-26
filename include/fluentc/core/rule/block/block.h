@@ -25,6 +25,7 @@
 #include "../jump/jump.h"
 #include "../mov/mov.h"
 #include "../ret/ret.h"
+#include "../store/store.h"
 #include "fluent/file_code/file_code.h"
 
 namespace fluent::compiler::rule
@@ -99,6 +100,20 @@ namespace fluent::compiler::rule
                 case parser::Jump:
                 {
                     process_jump(builder, child, blocks);
+                    break;
+                }
+
+                case parser::Store:
+                {
+                    process_store(
+                        module,
+                        builder,
+                        context,
+                        child,
+                        variables,
+                        ct_stats
+                    );
+
                     break;
                 }
 
