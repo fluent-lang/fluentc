@@ -33,7 +33,7 @@ namespace fluent::compiler::rule
     inline llvm::Value *process_eq(
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &eq,
-        const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
+        const ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
         stats::CompileTimeStats &ct_stats,
         const char *expr_name
     )
@@ -47,7 +47,7 @@ namespace fluent::compiler::rule
 
         // Get the left variable to check if we are comparing floats or structs
         const auto left_var = variables.at(util::try_unwrap(children[0]->value));
-        const file_code::Type original_type = left_var.original_type;
+        const file_code::Type original_type = left_var->original_type;
 
         // Check if we are comparing structs
         if (original_type.base_type.has_value())
