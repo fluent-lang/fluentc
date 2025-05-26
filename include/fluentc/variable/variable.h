@@ -30,6 +30,21 @@ namespace fluent::compiler::variable
         file_code::Type original_type;
     } Variable;
 
+    inline Variable get_variable(
+        const ankerl::unordered_dense::map<std::string_view, Variable> &variables,
+        const std::string_view &name
+    )
+    {
+        // Check if the variable exists
+        if (variables.contains(name))
+        {
+            return variables.at(name);
+        }
+
+        // If not found, throw an error
+        throw std::runtime_error("Error: Variable not found (" + std::string(name.data()) + ")");
+    }
+
     inline llvm::Value *find_value(
         const ankerl::unordered_dense::map<std::string_view, Variable> &variables,
         stats::CompileTimeStats &ct_stats,
@@ -42,20 +57,14 @@ namespace fluent::compiler::variable
             return ct_stats.get_ref(name);
         }
 
-        // Check if the variable exists
-        if (variables.contains(name))
+        // Get the variable
+        const Variable var = get_variable(variables, name);
+        if (var.alloca != nullptr)
         {
-            const auto var = variables.at(name);
-            if (var.alloca != nullptr)
-            {
-                return var.alloca;
-            }
-
-            return var.value;
+            return var.alloca;
         }
 
-        // If not found, throw an error
-        throw std::runtime_error("Error: Variable not found (" + std::string(name.data()) + ")");
+        return var.value;
     }
 }
 
