@@ -20,6 +20,7 @@
 #define FLUENTC_RULE_BLOCK_H
 
 #include "../../../variable/variable.h"
+#include "../if/if.h"
 #include "../jump/jump.h"
 #include "../mov/mov.h"
 #include "../ret/ret.h"
@@ -83,7 +84,20 @@ namespace fluent::compiler::rule
 
                 case parser::Jump:
                 {
-                    jump::process_jump(builder, child, blocks);
+                    process_jump(builder, child, blocks);
+                    break;
+                }
+
+                case parser::Block:
+                {
+                    process_if(
+                        context,
+                        builder,
+                        child,
+                        blocks,
+                        variables,
+                        ct_stats
+                    );
                     break;
                 }
 
