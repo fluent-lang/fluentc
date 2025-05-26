@@ -23,7 +23,7 @@
 #include <fluent/parser/ast/ast.h>
 #include <fluent/util/unwrap.h>
 
-namespace fluent::compiler::jump
+namespace fluent::compiler::rule
 {
     inline void process_jump(
         llvm::IRBuilder<> &builder,
