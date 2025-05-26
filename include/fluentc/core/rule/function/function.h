@@ -36,7 +36,8 @@ namespace fluent::compiler::rule
         stats::CompileTimeStats &ct_stats,
         const std::shared_ptr<file_code::Function> &fun,
         const bool is_main,
-        ankerl::unordered_dense::map<std::string_view, variable::Variable> variables
+        ankerl::unordered_dense::map<std::string_view, variable::Variable> variables,
+        ankerl::unordered_dense::map<std::string_view, llvm::BasicBlock *> blocks
     )
     {
         builder.SetInsertPoint(block);
@@ -195,7 +196,8 @@ namespace fluent::compiler::rule
                 ct_stats,
                 fun,
                 is_main,
-                variables
+                variables,
+                blocks
             );
         }
     }
