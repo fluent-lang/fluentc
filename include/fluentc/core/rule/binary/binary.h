@@ -19,7 +19,6 @@
 #ifndef FLUENTC_RULE_BINARY_H
 #define FLUENTC_RULE_BINARY_H
 #include <ankerl/unordered_dense.h>
-#include <fluent/atoi/library.h>
 #include <llvm/IR/IRBuilder.h>
 
 #include "../../../stats/stats.h"
@@ -30,6 +29,7 @@
 namespace fluent::compiler::rule
 {
     inline llvm::Value *process_binary_opt(
+        llvm::LLVMContext &context,
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &add,
         const ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
@@ -40,36 +40,8 @@ namespace fluent::compiler::rule
     {
         // Get the children
         const auto &children = util::try_unwrap(add->children);
-        const auto left = find_value(variables, ct_stats, children[0]->value->data());
-        const auto right_child = children[1];
-
-        llvm::Value *right;
-        // Initialize the value
-        switch (right_child->rule)
-        {
-            case parser::Identifier:
-            {
-                // Get the identifier value
-                const auto id_val = util::try_unwrap(right_child->value);
-                right = find_value(variables, ct_stats, id_val);
-                break;
-            }
-
-            case parser::NumLiteral:
-            {
-                // Get the value
-                right = llvm::ConstantInt::get(
-                    left->getType(),
-                    atoi_convert(right_child->value->data())
-                );
-                break;
-            }
-
-            default:
-            {
-                throw std::runtime_error("Error: Unknown binary operator right child");
-            }
-        }
+        const auto left = find_value(context, variables, ct_stats, children[0]);
+        auto *right = find_value(context, variables, ct_stats, children[1]);
 
         // Create the instruction
         switch (rule)
@@ -102,6 +74,50 @@ namespace fluent::compiler::rule
             case parser::Or:
             {
                 return builder.CreateOr(left, right, name);
+            }
+
+            case parser::Gt:
+            {
+                // Check if we are comparing floats
+                if (left->getType()->isFloatingPointTy() || right->getType()->isFloatingPointTy())
+                {
+                    return builder.CreateFCmpOGT(left, right, name);
+                }
+
+                return builder.CreateICmpSGT(left, right, name);
+            }
+
+            case parser::Ge:
+            {
+                // Check if we are comparing floats
+                if (left->getType()->isFloatingPointTy() || right->getType()->isFloatingPointTy())
+                {
+                    return builder.CreateFCmpOGE(left, right, name);
+                }
+
+                return builder.CreateICmpSGE(left, right, name);
+            }
+
+            case parser::Lt:
+            {
+                // Check if we are comparing floats
+                if (left->getType()->isFloatingPointTy() || right->getType()->isFloatingPointTy())
+                {
+                    return builder.CreateFCmpOLT(left, right, name);
+                }
+
+                return builder.CreateICmpSLT(left, right, name);
+            }
+
+            case parser::Le:
+            {
+                // Check if we are comparing floats
+                if (left->getType()->isFloatingPointTy() || right->getType()->isFloatingPointTy())
+                {
+                    return builder.CreateFCmpOLE(left, right, name);
+                }
+
+                return builder.CreateICmpSLE(left, right, name);
             }
 
             default:

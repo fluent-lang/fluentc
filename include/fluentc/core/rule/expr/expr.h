@@ -115,6 +115,10 @@ namespace fluent::compiler::rule
                 };
             }
 
+            case parser::Gt:
+            case parser::Lt:
+            case parser::Ge:
+            case parser::Le:
             case parser::Sub:
             case parser::Mul:
             case parser::Div:
@@ -125,6 +129,7 @@ namespace fluent::compiler::rule
                 return
                 {
                     process_binary_opt(
+                        context,
                         builder,
                         expr,
                         variables,
