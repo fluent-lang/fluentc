@@ -46,22 +46,9 @@ namespace fluent::compiler::rule
 
         // Get the value
         const auto var = get_variable(variables, id_val);
-        const auto value = var->value ? var->value : var->alloca;
-
-        // Clone the original type
-        const auto [pointers, arrays, base_type, primitive] = var->original_type;
-        const auto cloned_type = file_code::Type{
-            .pointers = std::max(pointers, static_cast<size_t>(1)) - 1, // Decrease pointers by 1 for take
-            .arrays = arrays,
-            .base_type = base_type,
-            .primitive = primitive
-        };
-
-        // Convert the type to LLVM
-        const auto type = types::convert_type(builder.getContext(), cloned_type, ct_stats);
 
         // Create a load instruction
-        return builder.CreateLoad(type, value, id_val.data());
+        return builder.CreateLoad(var->alloca->getAllocatedType(), var->alloca, id_val.data());
     }
 }
 
