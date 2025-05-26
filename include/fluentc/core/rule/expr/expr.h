@@ -39,7 +39,7 @@ namespace fluent::compiler::rule
         llvm::IRBuilder<> &builder,
         llvm::LLVMContext &context,
         const std::shared_ptr<parser::AST> &expr,
-        ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
+        ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
         stats::CompileTimeStats &ct_stats,
         llvm::Type *type,
         const char *expr_name,
