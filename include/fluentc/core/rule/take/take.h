@@ -44,14 +44,8 @@ namespace fluent::compiler::rule
         util::assert_eq(id->rule, parser::Identifier);
         const auto id_val = util::try_unwrap(id->value);
 
-        // Make sure the variable exists
-        if (!variables.contains(id_val))
-        {
-            throw std::runtime_error("Error: Variable not found (" + std::string(id_val.data()) + ")");
-        }
-
         // Get the value
-        const auto var = variables.at(id_val);
+        const auto var = get_variable(variables, id_val);
         const auto value = var.value ? var.value : var.alloca;
 
         // Clone the original type
