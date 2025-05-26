@@ -20,7 +20,6 @@
 #define FLUENTC_RULE_STORE_H
 
 #include "../../../variable/variable.h"
-#include "../block/block.h"
 
 namespace fluent::compiler::rule
 {
@@ -29,7 +28,7 @@ namespace fluent::compiler::rule
         llvm::IRBuilder<> &builder,
         llvm::LLVMContext &context,
         const std::shared_ptr<parser::AST> &store,
-        ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
+        ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
         stats::CompileTimeStats &ct_stats
     )
     {
@@ -45,10 +44,10 @@ namespace fluent::compiler::rule
         const auto &expr = children[1];
 
         // Get the variable
-        auto var = get_variable(variables, name);
+        const auto var = get_variable(variables, name);
 
         // Make sure we have an alloca
-        util::assert_eq(var.alloca != nullptr, true);
+        util::assert_eq(var->alloca != nullptr, true);
 
         // Get the value
         const auto &[value, _] = process_expr(
@@ -58,13 +57,13 @@ namespace fluent::compiler::rule
             expr,
             variables,
             ct_stats,
-            var.type,
+            var->type,
             name.data(),
-            var.alloca
+            var->alloca
         );
 
         // Update the value of the variable
-        var.value = value;
+        var->value = value;
     }
 }
 
