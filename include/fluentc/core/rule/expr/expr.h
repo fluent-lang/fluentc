@@ -27,6 +27,7 @@
 #include "../addr/addr.h"
 #include "../binary/binary.h"
 #include "../call/call.h"
+#include "../prop/prop.h"
 #include "../take/take.h"
 #include "fluent/parser/ast/ast.h"
 
@@ -145,6 +146,21 @@ namespace fluent::compiler::rule
                         ct_stats,
                         expr_name
                     )
+                };
+            }
+
+            case parser::Prop:
+            {
+                return
+                {
+                    process_prop(
+                        builder,
+                        expr,
+                        variables,
+                        ct_stats,
+                        expr_name
+                    ),
+                    nullptr,
                 };
             }
 
