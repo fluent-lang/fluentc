@@ -102,7 +102,7 @@ namespace fluent::compiler::rule
                     break;
                 }
 
-                case parser::Block:
+                case parser::If:
                 {
                     process_if(
                         context,
