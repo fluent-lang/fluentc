@@ -33,7 +33,7 @@ namespace fluent::compiler::rule
         llvm::LLVMContext &context,
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &ast,
-        ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
+        ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
         stats::CompileTimeStats &ct_stats
     )
     {
@@ -61,11 +61,11 @@ namespace fluent::compiler::rule
         );
 
         // Save the variable
-        variable::Variable var;
-        var.type = type;
-        var.alloca = alloca_inst;
-        var.value = alloca_inst;
-        var.original_type = original_type;
+        const auto var = std::make_shared<variable::Variable>();
+        var->type = type;
+        var->alloca = alloca_inst;
+        var->value = alloca_inst;
+        var->original_type = original_type;
         variables[name] = var;
     }
 }
