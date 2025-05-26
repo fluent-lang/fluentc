@@ -51,14 +51,8 @@ namespace fluent::compiler::rule
         // that will call strlen again
         const auto name = util::try_unwrap(children[0]->value);
 
-        // Check if the variable exists
-        if (!variables.contains(name))
-        {
-            throw std::runtime_error("Error: Variable not found (" + std::string(name) + ")");
-        }
-
         // Create an alloca instruction for the variable
-        const auto &var = variables.at(name);
+        const auto &var = get_variable(variables, name);
 
         // If the variable is not alloca, make it an alloca
         if (var.alloca == nullptr)
