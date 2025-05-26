@@ -37,7 +37,7 @@ namespace fluent::compiler::rule
         const std::shared_ptr<file_code::Function> &fun,
         const bool is_main,
         ankerl::unordered_dense::map<std::string_view, variable::Variable> variables,
-        ankerl::unordered_dense::map<std::string_view, llvm::BasicBlock *> blocks
+        const ankerl::unordered_dense::map<std::string_view, llvm::BasicBlock *> &blocks
     )
     {
         builder.SetInsertPoint(block);
