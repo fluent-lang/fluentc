@@ -44,14 +44,8 @@ namespace fluent::compiler::rule
         // Get the expression
         const auto &expr = children[1];
 
-        // Check if the variable exists
-        if (!variables.contains(name))
-        {
-            throw std::runtime_error("Error: Variable not found (" + std::string(name) + ")");
-        }
-
         // Get the variable
-        auto &var = variables.at(name);
+        auto var = get_variable(variables, name);
 
         // Make sure we have an alloca
         util::assert_eq(var.alloca != nullptr, true);
