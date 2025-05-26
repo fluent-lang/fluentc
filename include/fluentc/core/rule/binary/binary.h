@@ -40,7 +40,7 @@ namespace fluent::compiler::rule
         // Get the children
         const auto &children = util::try_unwrap(add->children);
         const auto left = find_value(variables, ct_stats, children[0]->value->data());
-        const auto right = find_value(variables, ct_stats, children[0]->value->data());
+        const auto right = find_value(variables, ct_stats, children[1]->value->data());
 
         // Create the instruction
         switch (rule)
