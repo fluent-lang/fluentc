@@ -22,83 +22,12 @@
 
 #include "../../../variable/variable.h"
 #include "../../types/types.h"
+#include "../block/block.h"
 #include "../mov/mov.h"
-#include "../ret/ret.h"
 #include "fluent/file_code/file_code.h"
 
 namespace fluent::compiler::rule
 {
-    inline void process_block(
-        llvm::BasicBlock *block,
-        llvm::LLVMContext &context,
-        const llvm::Module *module,
-        llvm::IRBuilder<> &builder,
-        stats::CompileTimeStats &ct_stats,
-        const std::shared_ptr<file_code::Function> &fun,
-        const bool is_main,
-        ankerl::unordered_dense::map<std::string_view, variable::Variable> variables,
-        const ankerl::unordered_dense::map<std::string_view, llvm::BasicBlock *> &blocks
-    )
-    {
-        builder.SetInsertPoint(block);
-
-        // Iterate over the function's body
-        for (const auto &child : util::try_unwrap(fun->body->children))
-        {
-            switch (child->rule)
-            {
-                case parser::Ret:
-                {
-                    // Return 0 for the main function
-                    if (is_main)
-                    {
-                        builder.CreateRet(llvm::ConstantInt::get(llvm::Type::getInt32Ty(context), 0));
-                    }
-                    else
-                    {
-                        // Process the return statement
-                        process_ret(
-                            builder,
-                            child,
-                            variables,
-                            ct_stats
-                        );
-                    }
-
-                    break;
-                }
-
-                case parser::Mov:
-                {
-                    process_mov(
-                        module,
-                        builder,
-                        context,
-                        child,
-                        variables,
-                        ct_stats
-                    );
-
-                    break;
-                }
-
-                default:
-                {
-                    process_expr(
-                        module,
-                        builder,
-                        context,
-                        child,
-                        variables,
-                        ct_stats,
-                        nullptr,
-                        nullptr
-                    );
-                }
-            }
-        }
-    }
-
     inline void process_functions(
         llvm::LLVMContext &context,
         llvm::Module *module,
