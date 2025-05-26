@@ -84,6 +84,7 @@ add_executable(fluentc main.cpp
         include/fluentc/core/rule/if/if.h
         include/fluentc/core/rule/alloca/alloca.h
         include/fluentc/core/rule/store/store.h
+        include/fluentc/core/rule/eq/eq.h
 )
 
 # Get the LLVM libraries using llvm-config
