@@ -32,7 +32,7 @@ namespace fluent::compiler::rule
     inline llvm::AllocaInst *process_addr(
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &child,
-        ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
+        ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
         stats::CompileTimeStats &ct_stats,
         const char *expr_name
     )
@@ -55,26 +55,26 @@ namespace fluent::compiler::rule
         const auto &var = get_variable(variables, name);
 
         // If the variable is not alloca, make it an alloca
-        if (var.alloca == nullptr)
+        if (var->alloca == nullptr)
         {
             // Create an alloca instruction for the variable
-            variables[name].alloca = builder.CreateAlloca(
-                var.type,
+            variables[name]->alloca = builder.CreateAlloca(
+                var->type,
                 nullptr,
                 name
             );
 
             // Store the value in the alloca instruction
             builder.CreateStore(
-                var.value,
-                variables[name].alloca,
+                var->value,
+                variables[name]->alloca,
                 name.data()
             );
         }
 
         const auto value = find_value(variables, ct_stats, name);
         const auto alloca_inst = builder.CreateAlloca(
-            var.type,
+            var->type,
             nullptr,
             expr_name
         );
