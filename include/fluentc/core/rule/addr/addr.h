@@ -47,7 +47,9 @@ namespace fluent::compiler::rule
         const auto &children = util::try_unwrap(child->children);
 
         // Get the variable name
-        const auto name = children[0]->value->data();
+        // Avoid using ->data() directly to avoid creating a new string_view
+        // that will call strlen again
+        const auto name = util::try_unwrap(children[0]->value);
 
         // Check if the variable exists
         if (!variables.contains(name))
@@ -72,7 +74,7 @@ namespace fluent::compiler::rule
             builder.CreateStore(
                 var.value,
                 variables[name].alloca,
-                name
+                name.data()
             );
         }
 
