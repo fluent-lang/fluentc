@@ -20,6 +20,7 @@
 #define FLUENTC_RULE_FUNCTION_H
 #include <llvm/IR/IRBuilder.h>
 
+#include "../../../block/block.h"
 #include "../../../variable/variable.h"
 #include "../../types/types.h"
 #include "../block/block.h"
@@ -86,8 +87,8 @@ namespace fluent::compiler::rule
 
             // Create a variable and block map
             ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> variables;
-            ankerl::unordered_dense::map<std::string_view, llvm::BasicBlock *> blocks;
             const auto [is_main, func] = function_signatures[name];
+            BlockList blocks(func);
 
             // Push all params to the variable map
             auto fn_args = func->arg_begin();
@@ -109,34 +110,6 @@ namespace fluent::compiler::rule
                 fn_args++;
             }
 
-            // Insert __block_end__ only if the return type is void
-            if (is_main || fun->return_type.primitive.has_value() && fun->return_type.primitive.value() == file_code::Nothing)
-            {
-                const auto new_block = llvm::BasicBlock::Create(context, "__block_end__", func);
-                blocks["__block_end__"] = new_block;
-
-                // Add a return 0 for main
-                if (is_main)
-                {
-                    llvm::Value *ret_val = llvm::ConstantInt::get(llvm::Type::getInt32Ty(context), 0);
-                    builder.SetInsertPoint(new_block);
-                    builder.CreateRet(ret_val);
-                } else
-                {
-                    // Create a return instruction for non-main functions
-                    builder.SetInsertPoint(new_block);
-                    builder.CreateRetVoid();
-                }
-            }
-
-            // Insert all blocks (Insertion happens after the main block is written)
-            for (const auto &[name, block] : fun->blocks)
-            {
-                // Create a new block
-                llvm::BasicBlock *basic_block = llvm::BasicBlock::Create(context, name, func);
-                blocks[name] = basic_block;
-            }
-
             // Process the function body
             llvm::BasicBlock *block = llvm::BasicBlock::Create(context, "entry", func);
             process_block(
@@ -155,7 +128,7 @@ namespace fluent::compiler::rule
             for (const auto &[name, block] : fun->blocks)
             {
                 // Get the basic block from the map
-                const auto basic_block = blocks.at(name);
+                const auto basic_block = blocks.get_block(name, context);
 
                 // Entry block never present here, no need for name checking
                 process_block(
@@ -169,6 +142,31 @@ namespace fluent::compiler::rule
                     blocks,
                     util::try_unwrap(block->children)
                 );
+            }
+
+            // Insert __block_end__ only if the return type is void
+            if (
+                blocks.contains("__block_end__") &&
+                (
+                    is_main || fun->return_type.primitive.has_value() &&
+                    fun->return_type.primitive.value() == file_code::Nothing
+                )
+            )
+            {
+                const auto new_block = blocks.get_block("__block_end__", context);
+
+                // Add a return 0 for main
+                if (is_main)
+                {
+                    llvm::Value *ret_val = llvm::ConstantInt::get(llvm::Type::getInt32Ty(context), 0);
+                    builder.SetInsertPoint(new_block);
+                    builder.CreateRet(ret_val);
+                } else
+                {
+                    // Create a return instruction for non-main functions
+                    builder.SetInsertPoint(new_block);
+                    builder.CreateRetVoid();
+                }
             }
         }
     }

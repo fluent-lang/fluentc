@@ -32,7 +32,7 @@ namespace fluent::compiler::rule
         llvm::LLVMContext &context,
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &ast,
-        const ankerl::unordered_dense::map<std::string_view, llvm::BasicBlock *> &blocks,
+        BlockList &blocks,
         const ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
         stats::CompileTimeStats &ct_stats
     )
@@ -63,15 +63,9 @@ namespace fluent::compiler::rule
         const auto &then_block_name = children[1]->value->data();
         const auto &else_block_name = children[2]->value->data();
 
-        // Check if the blocks exist
-        if (!blocks.contains(then_block_name) || !blocks.contains(else_block_name))
-        {
-            throw std::runtime_error("Error: Jump to non-existing block");
-        }
-
         // Get the blocks
-        const auto then_block = blocks.at(then_block_name);
-        const auto else_block = blocks.at(else_block_name);
+        const auto then_block = blocks.get_block(then_block_name, context);
+        const auto else_block = blocks.get_block(else_block_name, context);
 
         // Create the condition
         builder.CreateCondBr(cond_val, then_block, else_block);

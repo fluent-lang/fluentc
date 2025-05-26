@@ -26,30 +26,20 @@
 namespace fluent::compiler::rule
 {
     inline void process_jump(
+        llvm::LLVMContext &context,
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &ast,
-        const ankerl::unordered_dense::map<std::string_view, llvm::BasicBlock *> &blocks
+        BlockList &blocks
     )
     {
         // Get the children
         const auto &children = util::try_unwrap(ast->children);
 
-        // Get the identifier and make sure it exists
-        if (
-            const auto &id = children[0]->value->data();
-            blocks.contains(id)
-        )
-        {
-            // Get the block
-            const auto block_to_jump = blocks.at(id);
-
-            // Create the branch instruction
-            builder.CreateBr(block_to_jump);
-        }
-        else
-        {
-            throw std::runtime_error("Error: Jump to non-existing block");
-        }
+        // Create the branch instruction
+        builder.CreateBr(blocks.get_block(
+            util::try_unwrap(children[0]->value),
+            context
+        ));
     }
 }
 

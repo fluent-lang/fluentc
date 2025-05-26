@@ -38,7 +38,7 @@ namespace fluent::compiler::rule
         stats::CompileTimeStats &ct_stats,
         const bool is_main,
         ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
-        const ankerl::unordered_dense::map<std::string_view, llvm::BasicBlock *> &blocks,
+        BlockList &blocks,
         const std::vector<std::shared_ptr<parser::AST>> &children
     )
     {
@@ -99,7 +99,7 @@ namespace fluent::compiler::rule
 
                 case parser::Jump:
                 {
-                    process_jump(builder, child, blocks);
+                    process_jump(context, builder, child, blocks);
                     break;
                 }
 
