@@ -154,8 +154,9 @@ namespace fluent::compiler::rule
         {
             emit(state::Building, name.data());
 
-            // Create a variable map
+            // Create a variable and block map
             ankerl::unordered_dense::map<std::string_view, variable::Variable> variables;
+            ankerl::unordered_dense::map<std::string_view, llvm::BasicBlock *> blocks;
             const auto [is_main, func] = function_signatures[name];
 
             // Push all params to the variable map
@@ -174,6 +175,14 @@ namespace fluent::compiler::rule
 
                 i++;
                 fn_args++;
+            }
+
+            // Insert all blocks (Insertion happens after the main block is written)
+            for (const auto &[name, block] : fun->blocks)
+            {
+                // Create a new block
+                llvm::BasicBlock *basic_block = llvm::BasicBlock::Create(context, name, func);
+                blocks[name] = basic_block;
             }
 
             // Process the function body
