@@ -20,9 +20,8 @@
 #define FLUENTC_RULE_JUMP_H
 #include <ankerl/unordered_dense.h>
 #include <llvm/IR/IRBuilder.h>
-
-#include "fluent/parser/ast/ast.h"
-#include "fluent/util/unwrap.h"
+#include <fluent/parser/ast/ast.h>
+#include <fluent/util/unwrap.h>
 
 namespace fluent::compiler::jump
 {
