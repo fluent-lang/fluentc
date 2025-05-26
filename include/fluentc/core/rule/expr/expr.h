@@ -41,7 +41,8 @@ namespace fluent::compiler::rule
         ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
         stats::CompileTimeStats &ct_stats,
         llvm::Type *type,
-        const char *expr_name
+        const char *expr_name,
+        llvm::AllocaInst *alloca_inst = nullptr
     )
     {
         switch (expr->rule)
@@ -80,7 +81,7 @@ namespace fluent::compiler::rule
             case parser::Construct:
             {
                 // Let process_call create a new alloca instruction
-                const auto alloca_inst = static_cast<llvm::AllocaInst *>(
+                const auto result = static_cast<llvm::AllocaInst *>(
                     process_call(
                         module,
                         context,
@@ -88,14 +89,14 @@ namespace fluent::compiler::rule
                         expr, variables,
                         ct_stats,
                         true,
-                        nullptr
+                        alloca_inst
                     )
                 );
 
                 return
                 {
-                    alloca_inst,
-                    alloca_inst
+                    result,
+                    result
                 };
             }
 
