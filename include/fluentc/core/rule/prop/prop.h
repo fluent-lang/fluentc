@@ -32,7 +32,7 @@ namespace fluent::compiler::rule
     inline llvm::Value *process_prop(
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &child,
-        const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
+        const ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
         stats::CompileTimeStats &ct_stats,
         const char *expr_name
     )
@@ -55,7 +55,7 @@ namespace fluent::compiler::rule
         // Use fluent_libc to convert the counter to an integer
         const auto i = atoi_convert(counter->value->data());
         // Get the variable
-        const auto &[type, alloca, value, _] = get_variable(variables, id);
+        const auto &[type, alloca, value, _] = *get_variable(variables, id);
         const auto var_value = alloca ? alloca : value;
 
         // Get the filed
