@@ -37,7 +37,7 @@ namespace fluent::compiler::rule
         llvm::IRBuilder<> &builder,
         stats::CompileTimeStats &ct_stats,
         const bool is_main,
-        ankerl::unordered_dense::map<std::string_view, variable::Variable> variables,
+        ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
         const ankerl::unordered_dense::map<std::string_view, llvm::BasicBlock *> &blocks,
         const std::vector<std::shared_ptr<parser::AST>> &children
     )
