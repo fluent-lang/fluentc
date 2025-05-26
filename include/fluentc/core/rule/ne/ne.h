@@ -66,7 +66,7 @@ namespace fluent::compiler::rule
         }
 
         // Check if we are comparing floats
-        if (left_val->getType()->isFloatingPointTy())
+        if (left_val->getType()->isFloatingPointTy() || right_val->getType()->isFloatingPointTy())
         {
             // Create a floating point not equal instruction
             return builder.CreateFCmpUNE(
