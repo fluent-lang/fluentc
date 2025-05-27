@@ -46,11 +46,8 @@ namespace fluent::compiler::rule
         // Get the variable
         const auto var = get_variable(variables, name);
 
-        // Make sure we have an alloca
-        util::assert_eq(var->alloca != nullptr, true);
-
         // Get the value
-        const auto &[value, _] = process_expr(
+        const auto &[value, result_alloca] = process_expr(
             module,
             builder,
             context,
@@ -65,7 +62,11 @@ namespace fluent::compiler::rule
         // Create a store instruction
         return builder.CreateStore(
             value,
-            var->alloca,
+            var->alloca ?
+                var->alloca
+                    : result_alloca ?
+                        result_alloca :
+                            var->value,
             name.data()
         );
     }
