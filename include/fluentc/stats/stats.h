@@ -74,7 +74,7 @@ namespace fluent::compiler::stats
             refs[name] = var;
         }
 
-        bool has_ref(const std::string_view &name) const
+        [[nodiscard]] bool has_ref(const std::string_view &name) const
         {
             // Check if the ref exists
             return refs.contains(name);
@@ -106,7 +106,7 @@ namespace fluent::compiler::stats
             mods[name] = mod;
         }
 
-        bool has_mod(const std::string_view &name) const
+        [[nodiscard]] bool has_mod(const std::string_view &name) const
         {
             // Check if the mod exists
             return mods.contains(name);
