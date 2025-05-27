@@ -22,7 +22,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <vector>
-#include <fluent/itoa/library.h>
+#include <fluent/itoa/itoa.h>
 
 namespace fluent::compiler::stats
 {
@@ -30,6 +30,8 @@ namespace fluent::compiler::stats
     {
         long requested_vars = 0;
         std::vector<char *> allocated_vars;
+        ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> refs;
+        ankerl::unordered_dense::map<std::string_view, llvm::StructType *> mods;
 
     public:
         CompileTimeStats() = default;
@@ -47,7 +49,7 @@ namespace fluent::compiler::stats
 
             // Convert the requested_vars to a string
             char *requested_vars_str = itoa(requested_vars);
-            memcpy(var, requested_vars_str, requested_vars + 1); // +1 for null terminator
+            memcpy(var + 10, requested_vars_str, requested_vars + 1); // +1 for null terminator
             free(requested_vars_str);
 
             // Store the variable
@@ -55,6 +57,71 @@ namespace fluent::compiler::stats
             ++requested_vars;
 
             return var;
+        }
+
+        void insert_ref(
+            const std::string_view &name,
+            llvm::GlobalVariable *var
+        )
+        {
+            // Check if the ref already exists
+            if (refs.contains(name))
+            {
+                throw std::runtime_error("Error: Ref already exists");
+            }
+
+            // Insert the ref
+            refs[name] = var;
+        }
+
+        [[nodiscard]] bool has_ref(const std::string_view &name) const
+        {
+            // Check if the ref exists
+            return refs.contains(name);
+        }
+
+        llvm::GlobalVariable *get_ref(const std::string_view &name)
+        {
+            // Check if the ref exists
+            if (!refs.contains(name))
+            {
+                throw std::runtime_error("Error: Ref not found");
+            }
+
+            // Get the ref
+            return refs[name];
+        }
+
+        void insert_mod(
+            const std::string_view &name,
+            llvm::StructType *mod
+        ) {
+            // Check if the mod already exists
+            if (mods.contains(name))
+            {
+                throw std::runtime_error("Error: Mod already exists");
+            }
+
+            // Insert the mod
+            mods[name] = mod;
+        }
+
+        [[nodiscard]] bool has_mod(const std::string_view &name) const
+        {
+            // Check if the mod exists
+            return mods.contains(name);
+        }
+
+        llvm::StructType * get_mod(const std::string_view &name)
+        {
+            // Check if the mod exists
+            if (!mods.contains(name))
+            {
+                throw std::runtime_error("Error: Mod not found");
+            }
+
+            // Get the mod
+            return mods[name];
         }
 
         ~CompileTimeStats()

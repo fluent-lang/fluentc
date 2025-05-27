@@ -16,11 +16,11 @@
 // Created by rodrigo on 5/20/25.
 //
 
-#ifndef FEATURE_REF_H
-#define FEATURE_REF_H
+#ifndef FLUENTC_RULE_REF_H
+#define FLUENTC_RULE_REF_H
 
 #include <fluent/file_code/file_code.h>
-#include <fluent/atoi/library.h>
+#include <fluent/atoi/atoi.h>
 
 namespace fluent::compiler::rule
 {
@@ -28,7 +28,7 @@ namespace fluent::compiler::rule
         llvm::LLVMContext &context,
         llvm::Module *module,
         const file_code::FileCode *code,
-        ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs
+        stats::CompileTimeStats &stats
     )
     {
         // Iterate over all refs
@@ -40,7 +40,7 @@ namespace fluent::compiler::rule
                 case parser::StringLiteral:
                 {
                     // Create a global string
-                    const auto &str = fluent::util::try_unwrap(value->value);
+                    const auto &str = util::try_unwrap(value->value);
                     const auto global = new llvm::GlobalVariable(
                         *module,
                         llvm::ArrayType::get(llvm::Type::getInt8Ty(context), str.size() + 1), // +1 for null terminator
@@ -52,7 +52,7 @@ namespace fluent::compiler::rule
 
                     // Set the initializer to the string
                     global->setInitializer(llvm::ConstantDataArray::getString(context, str.data()));
-                    refs[name] = global;
+                    stats.insert_ref(name, global);
 
                     break;
                 }
@@ -60,7 +60,7 @@ namespace fluent::compiler::rule
                 case parser::NumLiteral:
                 {
                     // Create a global int
-                    const auto &num = fluent::util::try_unwrap(value->value);
+                    const auto &num = util::try_unwrap(value->value);
                     const auto global = new llvm::GlobalVariable(
                         *module,
                         llvm::Type::getInt32Ty(context),
@@ -72,14 +72,15 @@ namespace fluent::compiler::rule
                         ),
                         name.data()
                     );
-                    refs[name] = global;
+
+                    stats.insert_ref(name, global);
                     break;
                 }
 
                 case parser::DecLiteral:
                 {
                     // Create a global int
-                    const auto &num = fluent::util::try_unwrap(value->value);
+                    const auto &num = util::try_unwrap(value->value);
                     const auto global = new llvm::GlobalVariable(
                         *module,
                         llvm::Type::getFloatTy(context),
@@ -92,7 +93,7 @@ namespace fluent::compiler::rule
                         name.data()
                     );
 
-                    refs[name] = global;
+                    stats.insert_ref(name, global);
                     break;
                 }
 
@@ -103,4 +104,4 @@ namespace fluent::compiler::rule
     }
 }
 
-#endif //FEATURE_REF_H
+#endif //FLUENTC_RULE_REF_H

@@ -29,7 +29,7 @@
 #include "../util/file_reader.h"
 
 #include "../ir/ir_compiler.h"
-#include "../state/state .h"
+#include "../state/state.h"
 #include "backend.h"
 
 namespace fluent::compiler
@@ -42,7 +42,7 @@ namespace fluent::compiler
     {
         // Read the file
         const auto file = util::read_file(path);
-        fluent::util::assert_eq(optimization_level > 3, false); // Ensure we have a valid optimization level (0-3)
+        util::assert_eq(optimization_level > 3, false); // Ensure we have a valid optimization level (0-3)
 
         // Parse the code
         emit(state::Lexing, nullptr);

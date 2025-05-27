@@ -61,19 +61,32 @@ add_executable(fluentc main.cpp
         include/fluentc/core/rule/link/link.h
         include/fluentc/core/rule/function/function.h
         include/fluentc/core/rule/ref/ref.h
-        "include/fluentc/core/types/types .h"
+        "include/fluentc/core/types/types.h"
         include/fluentc/core/rule/ret/ret.h
         include/fluentc/variable/variable.h
-        include/fluentc/core/rule/expr/expr.h
         include/fluentc/core/rule/call/call.h
         include/fluentc/ir/ir_compiler.h
         include/fluentc/ir/ir_linker.h
         include/fluentc/ansi/ansi.h
-        "include/fluentc/state/state .h"
+        "include/fluentc/state/state.h"
         include/fluentc/util/command.h
         include/fluentc/core/rule/mod/mod.h
         include/fluentc/util/triple.h
         include/fluentc/stats/stats.h
+        include/fluentc/core/rule/mov/mov.h
+        include/fluentc/core/rule/binary/binary.h
+        include/fluentc/core/rule/take/take.h
+        include/fluentc/core/rule/expr/expr.h
+        include/fluentc/core/rule/addr/addr.h
+        include/fluentc/core/rule/prop/prop.h
+        include/fluentc/core/rule/block/block.h
+        include/fluentc/core/rule/jump/jump.h
+        include/fluentc/core/rule/if/if.h
+        include/fluentc/core/rule/alloca/alloca.h
+        include/fluentc/core/rule/store/store.h
+        include/fluentc/core/rule/eq/eq.h
+        include/fluentc/block/block.h
+        include/fluentc/core/rule/ne/ne.h
 )
 
 # Get the LLVM libraries using llvm-config
@@ -95,6 +108,7 @@ target_link_libraries(fluentc PRIVATE fluent_parser)
 target_link_libraries(fluentc PRIVATE cli)
 target_link_libraries(fluentc PRIVATE fluent_libc)
 target_link_libraries(fluentc PRIVATE cpp-subprocess::subprocess)
+add_definitions(-DDEBUG -DFLUENT_LIBC_RELEASE=1)
 
 # Add aggressive optimization flags for C++ and C compilers
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -funroll-loops -flto")

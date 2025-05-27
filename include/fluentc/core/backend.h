@@ -39,23 +39,20 @@ namespace fluent::compiler
         // Make sure we have a main function
         util::assert_eq(code->functions.contains("main"), true);
 
-        // Create a ref map
-        ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> refs;
-
         // Create a stats object
         stats::CompileTimeStats stats;
 
         // Process all refs
-        rule::process_refs(context, module, code, refs);
+        rule::process_refs(context, module, code, stats);
 
         // Add all links
         rule::process_links(context, module, code);
 
         // Process all mods
-        rule::process_mods(context, code);
+        rule::process_mods(context, code, stats);
 
         // Process all functions
-        rule::process_functions(context, module, builder, code, refs, stats);
+        rule::process_functions(context, module, builder, code, stats);
     }
 }
 

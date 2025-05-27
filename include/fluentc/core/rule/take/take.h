@@ -13,39 +13,43 @@
 */
 
 //
-// Created by rodrigo on 5/21/25.
+// Created by rodrigo on 5/25/25.
 //
 
-#ifndef FLUENTC_RULE_RET_H
-#define FLUENTC_RULE_RET_H
+#ifndef FLUENTC_RULE_TAKE_H
+#define FLUENTC_RULE_TAKE_H
+#include <ankerl/unordered_dense.h>
+#include <llvm/IR/IRBuilder.h>
+
+#include "../../../stats/stats.h"
+#include "../../../variable/variable.h"
+#include "fluent/parser/ast/ast.h"
+#include "fluent/util/assert.h"
+#include "fluent/util/unwrap.h"
 
 namespace fluent::compiler::rule
 {
-    inline void process_ret(
+    inline llvm::Value *process_take(
         llvm::IRBuilder<> &builder,
-        const std::shared_ptr<parser::AST> &child,
+        const std::shared_ptr<parser::AST> &take,
         const ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
         stats::CompileTimeStats &ct_stats
     )
     {
         // Get the children
-        const auto &children = util::try_unwrap(child->children);
-
-        // Check if the return type is void
-        if (children.empty())
-        {
-            // Add a void return instruction
-            builder.CreateRetVoid();
-            return;
-        }
+        const auto &children = util::try_unwrap(take->children);
 
         // Get the identifier
-        const auto &identifier = children[0];
-        util::assert_eq(identifier->rule, parser::Identifier);
-        const auto id_val = util::try_unwrap(identifier->value);
+        const auto &id = children[0];
+        util::assert_eq(id->rule, parser::Identifier);
+        const auto id_val = util::try_unwrap(id->value);
 
-        // Create a return instruction
-        builder.CreateRet(find_value(variables, ct_stats, id_val));
+        // Get the value
+        const auto var = get_variable(variables, id_val);
+
+        // Create a load instruction
+        return builder.CreateLoad(var->alloca->getAllocatedType(), var->alloca, id_val.data());
     }
 }
-#endif //FLUENTC_RULE_RET_H
+
+#endif //FLUENTC_RULE_TAKE_H

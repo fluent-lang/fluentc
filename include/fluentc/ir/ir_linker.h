@@ -22,23 +22,23 @@
 namespace fluent::compiler
 {
     inline std::string link_ir(
-    const char *output,
-    const std::string &ir_path,
-    const file_code::FileCode &code
-)
+        const char *output,
+        const std::string &ir_path,
+        const file_code::FileCode &code
+    )
     {
         emit(state::Linking, "modules");
 
         // Link all modules using llvm-link
         std::vector<std::string> args;
-        args.push_back("llvm-link");
-        args.push_back("-S");
-        args.push_back(ir_path.c_str());
+        args.emplace_back("llvm-link");
+        args.emplace_back("-S");
+        args.emplace_back(ir_path.c_str());
 
         // Add all links
         for (const auto &link : code.links)
         {
-            args.push_back(link.data());
+            args.emplace_back(link.data());
         }
 
         // Add the output file
@@ -46,7 +46,7 @@ namespace fluent::compiler
             "{}_linked.ll",
             output
         );
-        args.push_back("-o");
+        args.emplace_back("-o");
         args.push_back(output_file);
 
         // Call the llvm-link command

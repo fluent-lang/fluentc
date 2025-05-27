@@ -1,0 +1,75 @@
+/*
+    The Fluent Programming Language
+    -----------------------------------------------------
+    This code is released under the GNU GPL v3 license.
+    For more information, please visit:
+    https://www.gnu.org/licenses/gpl-3.0.html
+    -----------------------------------------------------
+    Copyright (c) 2025 Rodrigo R. & All Fluent Contributors
+    This program comes with ABSOLUTELY NO WARRANTY.
+    For details type `fluent l`. This is free software,
+    and you are welcome to redistribute it under certain
+    conditions; type `fluent l -f` for details.
+*/
+
+//
+// Created by rodrigo on 5/25/25.
+//
+
+#ifndef FLUENTC_RULE_STORE_H
+#define FLUENTC_RULE_STORE_H
+
+#include "../../../variable/variable.h"
+
+namespace fluent::compiler::rule
+{
+    inline llvm::Value *process_store(
+        const llvm::Module *module,
+        llvm::IRBuilder<> &builder,
+        llvm::LLVMContext &context,
+        const std::shared_ptr<parser::AST> &store,
+        ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
+        stats::CompileTimeStats &ct_stats
+    )
+    {
+        // Get the children
+        const auto &children = util::try_unwrap(store->children);
+
+        // Get the variable name
+        // Avoid using ->data() directly to avoid creating a new string_view
+        // that will call strlen again
+        const auto &name = util::try_unwrap(children[0]->value);
+
+        // Get the expression
+        const auto &expr = children[1];
+
+        // Get the variable
+        const auto var = get_variable(variables, name);
+
+        // Get the value
+        const auto &[value, result_alloca] = process_expr(
+            module,
+            builder,
+            context,
+            expr,
+            variables,
+            ct_stats,
+            var->type,
+            name.data(),
+            var->alloca
+        );
+
+        // Create a store instruction
+        return builder.CreateStore(
+            value,
+            var->alloca ?
+                var->alloca
+                    : result_alloca ?
+                        result_alloca :
+                            var->value,
+            name.data()
+        );
+    }
+}
+
+#endif //FLUENTC_RULE_STORE_H

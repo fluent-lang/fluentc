@@ -13,65 +13,235 @@
 */
 
 //
-// Created by rodrigo on 5/21/25.
+// Created by rodrigo on 5/25/25.
 //
 
-#ifndef FLUENTC_EXPR_H
-#define FLUENTC_EXPR_H
-
-#include <fluent/file_code/file_code.h>
+#ifndef FLUENTC_RULE_EXPR_H
+#define FLUENTC_RULE_EXPR_H
+#include <ankerl/unordered_dense.h>
 #include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/Value.h>
 
+#include "../../../stats/stats.h"
+#include "../../../variable/variable.h"
+#include "../addr/addr.h"
+#include "../binary/binary.h"
 #include "../call/call.h"
+#include "../eq/eq.h"
+#include "../ne/ne.h"
+#include "../prop/prop.h"
+#include "../take/take.h"
+#include "fluent/parser/ast/ast.h"
 
 namespace fluent::compiler::rule
 {
-    inline llvm::Value *process_expr(
-        llvm::LLVMContext &context,
+    inline std::pair<llvm::Value *, llvm::AllocaInst *> process_expr(
         const llvm::Module *module,
         llvm::IRBuilder<> &builder,
-        const file_code::FileCode *code,
+        llvm::LLVMContext &context,
         const std::shared_ptr<parser::AST> &expr,
-        const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
-        const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
-        stats::CompileTimeStats &stats
+        ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
+        stats::CompileTimeStats &ct_stats,
+        llvm::Type *type,
+        const char *expr_name,
+        llvm::AllocaInst *alloca_inst = nullptr
     )
     {
-        // Get the children
-        const auto &children = util::try_unwrap(expr->children);
-
-        // Get the first children
-        switch (const auto &first_child = children[0]; first_child->rule)
+        switch (expr->rule)
         {
+            case parser::Identifier:
+            {
+                // Get the identifier value
+                const auto id_val = util::try_unwrap(expr->value);
+                // Find the variable in the map
+                const auto var = get_variable(variables, id_val);
+
+                // If we have an alloca instruction, return it
+                if (var->alloca != nullptr)
+                {
+                    return { var->alloca, var->alloca };
+                }
+
+                // Otherwise, return the value
+                return { var->value, nullptr };
+            }
+
+            case parser::NumLiteral:
+            {
+                // Get the value
+                return
+                {
+                    llvm::ConstantInt::get(
+                        type,
+                        atoi_convert(expr->value->data())
+                    ),
+                    nullptr
+                };
+            }
+
+            case parser::DecLiteral:
+            {
+                // Get the value
+                return
+                {
+                    llvm::ConstantInt::get(
+                        type,
+                        std::stod(expr->value->data())
+                    ),
+                    nullptr
+                };
+            }
+
             case parser::Call:
             {
-                return process_call(
-                    module,
-                    builder,
-                    first_child,
-                    variables,
-                    refs
-                );
+                return
+                {
+                    process_call(
+                        module,
+                        context,
+                        builder,
+                        expr,
+                        variables,
+                        ct_stats,
+                        false,
+                        nullptr
+                    ),
+                    nullptr
+                };
             }
 
             case parser::Construct:
             {
-                return process_call(
-                    module,
-                    builder,
-                    first_child,
-                    variables,
-                    refs,
-                    true
+                // Let process_call create a new alloca instruction
+                const auto result = static_cast<llvm::AllocaInst *>(
+                    process_call(
+                        module,
+                        context,
+                        builder,
+                        expr, variables,
+                        ct_stats,
+                        true,
+                        alloca_inst
+                    )
                 );
+
+                return
+                {
+                    result,
+                    result
+                };
+            }
+
+            case parser::Gt:
+            case parser::Lt:
+            case parser::Ge:
+            case parser::Le:
+            case parser::Sub:
+            case parser::Mul:
+            case parser::Div:
+            case parser::Add:
+            case parser::Or:
+            case parser::And:
+            {
+                return
+                {
+                    process_binary_opt(
+                        context,
+                        builder,
+                        expr,
+                        variables,
+                        ct_stats,
+                        expr_name,
+                        expr->rule
+                    ),
+                    nullptr
+                };
+            }
+
+            case parser::Take:
+            {
+                return
+                {
+                    process_take(
+                        builder,
+                        expr,
+                        variables,
+                        ct_stats
+                    ),
+                    nullptr
+                };
+            }
+
+            case parser::Addr:
+            {
+                return
+                {
+                    nullptr,
+                    process_addr(
+                        builder,
+                        expr,
+                        variables,
+                        ct_stats,
+                        expr_name
+                    )
+                };
+            }
+
+            case parser::Prop:
+            {
+                return
+                {
+                    process_prop(
+                        context,
+                        builder,
+                        expr,
+                        variables,
+                        ct_stats,
+                        expr_name
+                    ),
+                    nullptr,
+                };
+            }
+
+            case parser::Eq:
+            {
+                return
+                {
+                    process_eq(
+                        context,
+                        builder,
+                        expr,
+                        variables,
+                        ct_stats,
+                        expr_name
+                    ),
+                    nullptr
+                };
+            }
+
+            case parser::Ne:
+            {
+                return
+                {
+                    process_ne(
+                        context,
+                        builder,
+                        expr,
+                        variables,
+                        ct_stats,
+                        expr_name
+                    ),
+                    nullptr
+                };
             }
 
             default:
-                break;
+            {
+                return
+                { nullptr, nullptr };
+            }
         }
-
-        return nullptr;
     }
 }
 
-#endif //FLUENTC_EXPR_H
+#endif //FLUENTC_RULE_EXPR_H

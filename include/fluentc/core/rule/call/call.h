@@ -27,11 +27,13 @@ namespace fluent::compiler::rule
 {
     inline llvm::Value *process_call(
         const llvm::Module *module,
+        llvm::LLVMContext &context,
         llvm::IRBuilder<> &builder,
         const std::shared_ptr<parser::AST> &call,
-        const ankerl::unordered_dense::map<std::string_view, variable::Variable> &variables,
-        const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
-        const bool is_construct = false
+        const ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> &variables,
+        stats::CompileTimeStats &ct_stats,
+        const bool is_construct,
+        llvm::AllocaInst *struct_ptr
     )
     {
         // Get the children
@@ -50,12 +52,37 @@ namespace fluent::compiler::rule
 
             // Get the variable
             const auto id_val = util::try_unwrap(id->value);
-            args.push_back(find_value(variables, refs, id_val));
+            args.push_back(find_value(variables, ct_stats, id_val));
         }
 
         if (is_construct)
         {
-            // TODO!
+            // Get the struct type
+            llvm::Type *struct_ty = llvm::StructType::getTypeByName(context, name->value->data());
+
+            // Create a new alloca instruction for the struct
+            if (struct_ptr == nullptr)
+            {
+                struct_ptr = builder.CreateAlloca(struct_ty, nullptr, ct_stats.request_addr());
+            }
+
+            // Add all fields
+            for (size_t i = 1; i < children.size(); i++)
+            {
+                // Get the identifier
+                const auto id = children[i];
+
+                // Get the variable
+                const auto var = get_variable(variables, util::try_unwrap(id->value));
+
+                // Get the filed
+                llvm::Value *field = builder.CreateStructGEP(struct_ty, struct_ptr, i - 1, ct_stats.request_addr());
+
+                // Store the information
+                builder.CreateStore(var->value, field);
+            }
+
+            return struct_ptr;
         }
 
         // Create a function call

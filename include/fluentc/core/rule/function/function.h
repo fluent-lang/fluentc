@@ -16,14 +16,15 @@
 // Created by rodrigo on 5/20/25.
 //
 
-#ifndef FEATURE_FUNCTION_H
-#define FEATURE_FUNCTION_H
+#ifndef FLUENTC_RULE_FUNCTION_H
+#define FLUENTC_RULE_FUNCTION_H
 #include <llvm/IR/IRBuilder.h>
 
+#include "../../../block/block.h"
 #include "../../../variable/variable.h"
-#include "../../types/types .h"
-#include "../expr/expr.h"
-#include "../ret/ret.h"
+#include "../../types/types.h"
+#include "../block/block.h"
+#include "../mov/mov.h"
 #include "fluent/file_code/file_code.h"
 
 namespace fluent::compiler::rule
@@ -33,9 +34,11 @@ namespace fluent::compiler::rule
         llvm::Module *module,
         llvm::IRBuilder<> &builder,
         const file_code::FileCode *code,
-        const ankerl::unordered_dense::map<std::string_view, llvm::GlobalVariable *> &refs,
-        stats::CompileTimeStats &stats
+        stats::CompileTimeStats &ct_stats
     ) {
+        // Used to avoid computing strcmp for every function
+        bool has_found_main = false;
+
         // Since order of dependencies is not guaranteed, we have
         // to define all the functions' signatures beforehand
         ankerl::unordered_dense::map<std::string_view, std::pair<bool, llvm::Function *>> function_signatures;
@@ -43,13 +46,14 @@ namespace fluent::compiler::rule
         {
             // Convert the return type to a LLVM type
             llvm::Type *return_type;
-            const bool is_main = strcmp(name.data(), "main") == 0;
+            const bool is_main = !has_found_main && strcmp(name.data(), "main") == 0;
             if (is_main)
             {
                 return_type = llvm::Type::getInt32Ty(context);
+                has_found_main = true;
             } else
             {
-                return_type = convert_type(context, fun->return_type);
+                return_type = types::convert_type(context, fun->return_type, ct_stats);
             }
 
             // Collect the arguments
@@ -57,7 +61,7 @@ namespace fluent::compiler::rule
             for (const auto &[_, arg] : fun->params)
             {
                 // Convert the arg type and push it
-                args.push_back(convert_type(context, arg));
+                args.push_back(types::convert_type(context, arg, ct_stats));
             }
 
             // Create the function
@@ -81,23 +85,26 @@ namespace fluent::compiler::rule
         {
             emit(state::Building, name.data());
 
-            // Create a variable map
-            ankerl::unordered_dense::map<std::string_view, variable::Variable> variables;
+            // Create a variable and block map
+            ankerl::unordered_dense::map<std::string_view, std::shared_ptr<variable::Variable>> variables;
             const auto [is_main, func] = function_signatures[name];
+            BlockList blocks(func);
 
             // Push all params to the variable map
             auto fn_args = func->arg_begin();
             size_t i = 0;
-            for (const auto &[name, _] : fun->params)
+            for (const auto &[name, type] : fun->params)
             {
                 // Convert the arg type and push it
                 llvm::Value *param = func->getArg(0);
 
                 // Insert to the variables
-                variables[name] = variable::Variable{
-                    .type = param->getType(),
-                    .value = param,
-                };
+                const auto new_var = std::make_shared<variable::Variable>();
+                new_var->type = types::convert_type(context, type, ct_stats);
+                new_var->value = param;
+                new_var->original_type = type;
+
+                variables[name] = new_var;
 
                 i++;
                 fn_args++;
@@ -105,52 +112,64 @@ namespace fluent::compiler::rule
 
             // Process the function body
             llvm::BasicBlock *block = llvm::BasicBlock::Create(context, "entry", func);
-            builder.SetInsertPoint(block);
+            process_block(
+                block,
+                context,
+                module,
+                builder,
+                ct_stats,
+                is_main,
+                variables,
+                blocks,
+                util::try_unwrap(fun->body->children)
+            );
 
-            // Iterate over the function's body
-            for (const auto &child : util::try_unwrap(fun->body->children))
+            // Process additional blocks
+            for (const auto &[name, block] : fun->blocks)
             {
-                switch (child->rule)
+                // Get the basic block from the map
+                const auto basic_block = blocks.get_block(name, context);
+
+                // Entry block never present here, no need for name checking
+                process_block(
+                    basic_block,
+                    context,
+                    module,
+                    builder,
+                    ct_stats,
+                    is_main,
+                    variables,
+                    blocks,
+                    util::try_unwrap(block->children)
+                );
+            }
+
+            // Insert __block_end__ only if the return type is void
+            if (
+                blocks.contains("__block_end__") &&
+                (
+                    is_main || fun->return_type.primitive.has_value() &&
+                    fun->return_type.primitive.value() == file_code::Nothing
+                )
+            )
+            {
+                const auto new_block = blocks.get_block("__block_end__", context);
+
+                // Add a return 0 for main
+                if (is_main)
                 {
-                    case parser::Ret:
-                    {
-                        // Return 0 for the main function
-                        if (is_main)
-                        {
-                            builder.CreateRet(llvm::ConstantInt::get(llvm::Type::getInt32Ty(context), 0));
-                        }
-                        else
-                        {
-                            // Process the return statement
-                            process_ret(
-                                builder,
-                                child,
-                                variables,
-                                refs
-                            );
-                        }
-
-                        break;
-                    }
-
-                    default:
-                    {
-                        // Use the expression processor directly
-                        process_expr(
-                            context,
-                            module,
-                            builder,
-                            code,
-                            child,
-                            variables,
-                            refs,
-                            stats
-                        );
-                    }
+                    llvm::Value *ret_val = llvm::ConstantInt::get(llvm::Type::getInt32Ty(context), 0);
+                    builder.SetInsertPoint(new_block);
+                    builder.CreateRet(ret_val);
+                } else
+                {
+                    // Create a return instruction for non-main functions
+                    builder.SetInsertPoint(new_block);
+                    builder.CreateRetVoid();
                 }
             }
         }
     }
 }
 
-#endif //FEATURE_FUNCTION_H
+#endif //FLUENTC_RULE_FUNCTION_H
