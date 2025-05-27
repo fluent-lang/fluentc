@@ -76,7 +76,7 @@ namespace fluent::compiler::types
         }
 
         // Process all pointers and arrays
-        for (size_t i = 0; i < type.pointers + type.arrays; i++)
+        for (size_t i = 0; i < type.pointers; i++)
         {
             result = llvm::PointerType::get(result, 0);
         }
