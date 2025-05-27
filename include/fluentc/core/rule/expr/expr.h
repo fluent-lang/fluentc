@@ -192,6 +192,7 @@ namespace fluent::compiler::rule
                 return
                 {
                     process_prop(
+                        context,
                         builder,
                         expr,
                         variables,
